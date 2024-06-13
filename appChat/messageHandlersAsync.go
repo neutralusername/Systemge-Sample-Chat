@@ -27,7 +27,7 @@ func (app *App) AddMessage(message *Message.Message) error {
 		return Error.New("Room not found", nil)
 	}
 	chatMessage := &ChatMessage{
-		Name:   chatter.name,
+		Sender: chatter.name,
 		SentAt: time.Now(),
 		Text:   message.GetPayload(),
 	}

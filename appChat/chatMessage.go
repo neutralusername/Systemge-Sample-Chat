@@ -6,14 +6,14 @@ import (
 )
 
 type ChatMessage struct {
-	Name   string    `json:"name"`
+	Sender string    `json:"sender"`
 	Text   string    `json:"text"`
 	SentAt time.Time `json:"sentAt"`
 }
 
-func NewChatMessage(name string, text string) *ChatMessage {
+func NewChatMessage(sender string, text string) *ChatMessage {
 	return &ChatMessage{
-		Name:   name,
+		Sender: sender,
 		Text:   text,
 		SentAt: time.Now(),
 	}

@@ -21,7 +21,7 @@ export class chat extends React.Component {
                         borderRadius: "5px",
                     },
                 },
-                message.name + ": " + message.text + " (" + new Date(message.sentAt).toLocaleTimeString() + " " + new Date(message.sentAt).toLocaleDateString() + ")"
+                message.sender + ": " + message.text + " (" + new Date(message.sentAt).toLocaleTimeString() + " " + new Date(message.sentAt).toLocaleDateString() + ")"
             ))
         })
         messages.reverse();
