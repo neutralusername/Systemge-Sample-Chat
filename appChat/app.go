@@ -1,0 +1,37 @@
+package appChat
+
+import (
+	"Systemge/Application"
+	"Systemge/MessageBrokerClient"
+	"Systemge/Utilities"
+	"sync"
+)
+
+type App struct {
+	logger              *Utilities.Logger
+	messageBrokerClient *MessageBrokerClient.Client
+
+	rooms    map[string]*Room
+	chatters map[string]*Chatter
+	mutex    sync.Mutex
+}
+
+func New(logger *Utilities.Logger, messageBrokerClient *MessageBrokerClient.Client) Application.Application {
+	app := &App{
+		logger:              logger,
+		messageBrokerClient: messageBrokerClient,
+
+		rooms:    map[string]*Room{},
+		chatters: map[string]*Chatter{},
+		mutex:    sync.Mutex{},
+	}
+	return app
+}
+
+func (app *App) OnStart() error {
+	return nil
+}
+
+func (app *App) OnStop() error {
+	return nil
+}

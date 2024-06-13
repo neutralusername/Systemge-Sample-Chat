@@ -1,0 +1,47 @@
+package appChat
+
+import "Systemge/Error"
+
+const RINGBUFFER_SIZE = 7
+
+type Room struct {
+	id                string //websocketServer groupId
+	messageRingBuffer [RINGBUFFER_SIZE]*ChatMessage
+	currentIndex      int
+	chatters          map[string]*Chatter
+}
+
+func NewRoom(id string) *Room {
+	return &Room{
+		id:                id,
+		messageRingBuffer: [RINGBUFFER_SIZE]*ChatMessage{},
+		currentIndex:      0,
+		chatters:          map[string]*Chatter{},
+	}
+}
+
+func (app *App) ChatterChangeRoom(chatterName string, roomId string) error {
+	app.mutex.Lock()
+	defer app.mutex.Unlock()
+	chatter := app.chatters[chatterName]
+	if chatter == nil {
+		return Error.New("Chatter not found", nil)
+	}
+	if chatter.roomId != "" {
+		room := app.rooms[chatter.roomId]
+		if room != nil {
+			delete(room.chatters, chatterName)
+			if len(room.chatters) == 0 {
+				delete(app.rooms, chatter.roomId)
+			}
+		}
+	}
+	room := app.rooms[roomId]
+	if room == nil {
+		room = NewRoom(roomId)
+		app.rooms[roomId] = room
+	}
+	chatter.roomId = roomId
+	room.chatters[chatterName] = chatter
+	return nil
+}
