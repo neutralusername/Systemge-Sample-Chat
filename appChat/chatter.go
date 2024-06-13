@@ -3,7 +3,7 @@ package appChat
 import "Systemge/Error"
 
 type Chatter struct {
-	name   string
+	name   string //websocketId
 	roomId string
 }
 
