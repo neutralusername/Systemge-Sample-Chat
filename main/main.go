@@ -14,7 +14,7 @@ const ERROR_LOG_FILE_PATH = "error.log"
 
 func main() {
 	//resolver and brokers are placed outside, because on startup they need to be started first.
-	//and if they are stopped first on stop, which is inherent to multi-module behaviour, the other modules will not be able to communicate with them.
+	//and if they are stopped first on stop, which is inherent to multi-module behaviour, the other modules will not be able to communicate with them during their stop/disconnect routine.
 	//this demonstrates why multi modules are not always the best solution.
 	Module.NewResolverServerFromConfig("resolver.systemge", ERROR_LOG_FILE_PATH).Start()
 	Module.NewBrokerServerFromConfig("brokerChat.systemge", ERROR_LOG_FILE_PATH).Start()
