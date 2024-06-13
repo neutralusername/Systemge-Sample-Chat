@@ -5,7 +5,9 @@ import "Systemge/Error"
 const RINGBUFFER_SIZE = 7
 
 type Room struct {
-	id                string //websocketServer groupId
+	id string //websocketServer groupId
+
+	//messages are stored in a ring buffer to limit memory usage per room
 	messageRingBuffer [RINGBUFFER_SIZE]*ChatMessage
 	currentIndex      int
 	chatters          map[string]*Chatter
