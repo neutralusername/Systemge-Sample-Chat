@@ -22,7 +22,7 @@ func main() {
 
 	clientChat := Module.NewClient("clientApp", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, appChat.New)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
-		//order is important in this multi module because websocket app disconnects all clients when it stops and within the disconnect routine it communicates to the chat app that the client has disconnected.
+		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client has disconnected.
 		//if the chat app is stopped before the websocket app, the chat app will not be able to communicate to the websocket app that the client has disconnected.
 		//which results in the websocket app having chatters that will never be removed.
 		Module.NewWebsocketClient("clientWebsocket", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, "/ws", WEBSOCKET_PORT, "", "", appWebsocket.New),
