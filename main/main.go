@@ -19,6 +19,10 @@ func main() {
 
 	clientChat := Module.NewClient("clientApp", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, appChat.New)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
+		//resolver and brokers are placed outside, because on startup they need to be started first.
+		//and if they are closed first on stop, the other modules will not be able to communicate with them.
+		//this demonstrates why multi modules are not always the best solution.
+
 		//order is important in this multi module because websocket disconnects all clients when it stops and within the disconnect routine it communicates to the chat app that the client has disconnected.
 		//if the chat app is stopped before the websocket client, the chat app will not be able to communicate to the websocket client that the client has disconnected.
 		//which results in the websocket client having chatters that will never be removed.
