@@ -2,7 +2,6 @@
 :60000
 
 joinRoom :60004
-changeName :60004
 leave :60004
 addMessage :60004
 

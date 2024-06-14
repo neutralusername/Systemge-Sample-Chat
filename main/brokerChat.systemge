@@ -1,6 +1,5 @@
 # broker
 :60004
 joinRoom
-changeName
 leave
 addMessage
