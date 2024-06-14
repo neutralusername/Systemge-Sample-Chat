@@ -36,9 +36,7 @@ func (app *App) GetRoomMessages(roomId string) []string {
 	}
 	messages := []string{}
 	for i := 0; i < RINGBUFFER_SIZE; i++ {
-		index := (room.currentIndex + i) % RINGBUFFER_SIZE
-		message := room.messageRingBuffer[index]
-		if message != nil {
+		if message := room.messageRingBuffer[(room.currentIndex+i)%RINGBUFFER_SIZE]; message != nil {
 			messages = append(messages, message.Marshal())
 		}
 	}
