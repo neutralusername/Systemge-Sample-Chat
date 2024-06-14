@@ -19,8 +19,7 @@ func (app *App) GetSyncMessageHandlers() map[string]Application.SyncMessageHandl
 }
 
 func (app *App) Join(message *Message.Message) (string, error) {
-	err := app.AddChatter(message.GetOrigin())
-	if err != nil {
+	if err := app.AddChatter(message.GetOrigin()); err != nil {
 		return "", Error.New("Failed to create chatter", err)
 	}
 	if err := app.AddToRoom(message.GetOrigin(), message.GetPayload()); err != nil {
@@ -30,12 +29,10 @@ func (app *App) Join(message *Message.Message) (string, error) {
 }
 
 func (app *App) Leave(message *Message.Message) (string, error) {
-	err := app.RemoveFromRoom(message.GetOrigin())
-	if err != nil {
+	if err := app.RemoveFromRoom(message.GetOrigin()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}
-	err = app.RemoveChatter(message.GetOrigin())
-	if err != nil {
+	if err := app.RemoveChatter(message.GetOrigin()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}
 	return "", nil

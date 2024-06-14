@@ -47,11 +47,12 @@ func (app *App) RemoveFromRoom(chatterId string) error {
 		return Error.New("Chatter not found", nil)
 	}
 	room := app.rooms[chatter.roomId]
-	if room != nil {
-		delete(room.chatters, chatterId)
-		if len(room.chatters) == 0 {
-			delete(app.rooms, chatter.roomId)
-		}
+	if room == nil {
+		return Error.New("Room not found", nil)
+	}
+	delete(room.chatters, chatterId)
+	if len(room.chatters) == 0 {
+		delete(app.rooms, chatter.roomId)
 	}
 	return nil
 

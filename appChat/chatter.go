@@ -19,8 +19,7 @@ func (app *App) AddChatter(chatterId string) error {
 	if app.chatters[chatterId] != nil {
 		return Error.New("Chatter already exists", nil)
 	}
-	chatter := NewChatter(chatterId)
-	app.chatters[chatterId] = chatter
+	app.chatters[chatterId] = NewChatter(chatterId)
 	return nil
 }
 
@@ -31,8 +30,7 @@ func (app *App) RemoveChatter(chatterId string) error {
 	if chatter == nil {
 		return Error.New("Chatter not found", nil)
 	}
-	room := app.rooms[chatter.roomId]
-	if room != nil {
+	if room := app.rooms[chatter.roomId]; room != nil {
 		return Error.New("Chatter still in room", nil)
 	}
 	delete(app.chatters, chatterId)
