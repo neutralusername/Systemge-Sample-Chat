@@ -16,7 +16,7 @@ func main() {
 	//resolver and brokers are placed outside, because on startup they need to be started first.
 	//and if they are stopped first on stop, which is inherent to multi-module behaviour, the other modules will not be able to communicate with them during their stop/disconnect routine.
 	//this demonstrates why multi modules are not always the best solution.
-	//the alternative is to start them either manually in the main function or to start them in separate terminal windows as separate processes/programs.
+	//the alternative is to start them either manually, like here in the main function, or to start them in separate terminal windows as separate processes/programs.
 	Module.NewResolverServerFromConfig("resolver.systemge", ERROR_LOG_FILE_PATH).Start()
 	Module.NewBrokerServerFromConfig("brokerChat.systemge", ERROR_LOG_FILE_PATH).Start()
 	Module.NewBrokerServerFromConfig("brokerWebsocket.systemge", ERROR_LOG_FILE_PATH).Start()
