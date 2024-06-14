@@ -33,7 +33,7 @@ func (app *WebsocketApp) OnStop() error {
 func (app *WebsocketApp) GetAsyncMessageHandlers() map[string]Application.AsyncMessageHandler {
 	return map[string]Application.AsyncMessageHandler{
 		topics.PROPAGATE_MESSAGE: func(message *Message.Message) error {
-			app.messageBrokerClient.GetWebsocketServer().Groupcast(message.GetOrigin(), []byte(message.Serialize()))
+			app.messageBrokerClient.GetWebsocketServer().Groupcast(message.GetOrigin(), message)
 			return nil
 		},
 	}
