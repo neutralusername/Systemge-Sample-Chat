@@ -19,11 +19,11 @@ func (app *App) GetSyncMessageHandlers() map[string]Application.SyncMessageHandl
 }
 
 func (app *App) Join(message *Message.Message) (string, error) {
-	chatter, err := app.AddChatter(message.GetOrigin())
+	err := app.AddChatter(message.GetOrigin())
 	if err != nil {
 		return "", Error.New("Failed to create chatter", err)
 	}
-	if err := app.AddToRoom(chatter.name, message.GetPayload()); err != nil {
+	if err := app.AddToRoom(message.GetOrigin(), message.GetPayload()); err != nil {
 		return "", Error.New("Failed to join room", err)
 	}
 	return Utilities.StringsToJsonObjectArray(app.GetRoomMessages(message.GetPayload())), nil

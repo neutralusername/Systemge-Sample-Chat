@@ -5,7 +5,6 @@ import (
 	"Systemge/Error"
 	"Systemge/Message"
 	"SystemgeSampleChat/topics"
-	"time"
 )
 
 func (app *App) GetAsyncMessageHandlers() map[string]Application.AsyncMessageHandler {
@@ -26,13 +25,8 @@ func (app *App) AddMessage(message *Message.Message) error {
 	if room == nil {
 		return Error.New("Room not found", nil)
 	}
-	chatMessage := &ChatMessage{
-		Sender: chatter.name,
-		SentAt: time.Now(),
-		Text:   message.GetPayload(),
-	}
-	room.messageRingBuffer[room.currentIndex] = chatMessage
-	room.currentIndex = (room.currentIndex + 1) % RINGBUFFER_SIZE
+	chatMessage := NewChatMessage(chatter.name, message.GetPayload())
+	room.AddMessage(chatMessage)
 	app.messageBrokerClient.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
 	return nil
 }

@@ -24,6 +24,11 @@ func (chatMessage *ChatMessage) Marshal() string {
 	return string(json)
 }
 
+func (room *Room) AddMessage(message *ChatMessage) {
+	room.messageRingBuffer[room.currentIndex] = message
+	room.currentIndex = (room.currentIndex + 1) % RINGBUFFER_SIZE
+}
+
 func (app *App) GetRoomMessages(roomId string) []string {
 	room := app.rooms[roomId]
 	if room == nil {
