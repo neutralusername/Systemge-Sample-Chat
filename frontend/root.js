@@ -20,7 +20,6 @@ export class root extends React.Component {
                 let message = JSON.parse(event.data);
                 switch (message.topic) {
                     case "joinRoom":
-                        console.log(message)
                         this.state.setStateRoot({
                             messages: JSON.parse(message.payload),
                         });

@@ -23,14 +23,18 @@ func (app *App) Join(message *Message.Message) (string, error) {
 	if err != nil {
 		return "", Error.New("Failed to create chatter", err)
 	}
-	if err := app.ChatterChangeRoom(chatter.name, message.GetPayload()); err != nil {
+	if err := app.AddToRoom(chatter.name, message.GetPayload()); err != nil {
 		return "", Error.New("Failed to join room", err)
 	}
 	return Utilities.StringsToJsonObjectArray(app.GetRoomMessages(message.GetPayload())), nil
 }
 
 func (app *App) Leave(message *Message.Message) (string, error) {
-	err := app.RemoveChatter(message.GetOrigin())
+	err := app.RemoveFromRoom(message.GetOrigin())
+	if err != nil {
+		return "", Error.New("Failed to leave room", err)
+	}
+	err = app.RemoveChatter(message.GetOrigin())
 	if err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}
