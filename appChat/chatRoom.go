@@ -10,7 +10,7 @@ type Room struct {
 	//messages are stored in a ring buffer to limit memory usage per room
 	messageRingBuffer           [RINGBUFFER_SIZE]*ChatMessage
 	messageRingBufferWriteIndex int
-	chatters                    map[string]*Chatter
+	chatters                    map[string]*Chatter //chatterId -> chatter
 }
 
 func NewRoom(id string) *Room {

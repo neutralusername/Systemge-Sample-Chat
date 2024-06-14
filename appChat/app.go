@@ -11,8 +11,8 @@ type App struct {
 	logger              *Utilities.Logger
 	messageBrokerClient *MessageBrokerClient.Client
 
-	rooms    map[string]*Room
-	chatters map[string]*Chatter
+	rooms    map[string]*Room    //roomId -> room
+	chatters map[string]*Chatter //chatterId -> chatter
 	mutex    sync.Mutex
 }
 
