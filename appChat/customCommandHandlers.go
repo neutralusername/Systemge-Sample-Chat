@@ -18,13 +18,13 @@ func (app *App) GetChatters(args []string) error {
 	if len(args) < 1 {
 		return Error.New("Invalid arguments", nil)
 	}
-	roomName := args[0]
-	room := app.rooms[roomName]
+	roomId := args[0]
+	room := app.rooms[roomId]
 	if room == nil {
 		return Error.New("Room not found", nil)
 	}
 	for _, chatter := range room.chatters {
-		println(chatter.name)
+		println(chatter.id)
 	}
 	return nil
 }

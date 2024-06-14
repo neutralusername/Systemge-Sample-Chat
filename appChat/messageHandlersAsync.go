@@ -25,7 +25,7 @@ func (app *App) AddMessage(message *Message.Message) error {
 	if room == nil {
 		return Error.New("Room not found", nil)
 	}
-	chatMessage := NewChatMessage(chatter.name, message.GetPayload())
+	chatMessage := NewChatMessage(chatter.id, message.GetPayload())
 	room.AddMessage(chatMessage)
 	app.messageBrokerClient.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
 	return nil

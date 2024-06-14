@@ -22,10 +22,10 @@ func NewRoom(id string) *Room {
 	}
 }
 
-func (app *App) AddToRoom(chatterName string, roomId string) error {
+func (app *App) AddToRoom(chatterid string, roomId string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
-	chatter := app.chatters[chatterName]
+	chatter := app.chatters[chatterid]
 	if chatter == nil {
 		return Error.New("Chatter not found", nil)
 	}
@@ -35,20 +35,20 @@ func (app *App) AddToRoom(chatterName string, roomId string) error {
 		app.rooms[roomId] = room
 	}
 	chatter.roomId = roomId
-	room.chatters[chatterName] = chatter
+	room.chatters[chatterid] = chatter
 	return nil
 }
 
-func (app *App) RemoveFromRoom(chatterName string) error {
+func (app *App) RemoveFromRoom(chatterId string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
-	chatter := app.chatters[chatterName]
+	chatter := app.chatters[chatterId]
 	if chatter == nil {
 		return Error.New("Chatter not found", nil)
 	}
 	room := app.rooms[chatter.roomId]
 	if room != nil {
-		delete(room.chatters, chatterName)
+		delete(room.chatters, chatterId)
 		if len(room.chatters) == 0 {
 			delete(app.rooms, chatter.roomId)
 		}

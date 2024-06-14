@@ -3,24 +3,24 @@ package appChat
 import "Systemge/Error"
 
 type Chatter struct {
-	name   string //websocketId
+	id     string //websocketId
 	roomId string
 }
 
-func NewChatter(name string) *Chatter {
+func NewChatter(id string) *Chatter {
 	return &Chatter{
-		name: name,
+		id: id,
 	}
 }
 
-func (app *App) AddChatter(chatterName string) error {
+func (app *App) AddChatter(chatterId string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
-	if app.chatters[chatterName] != nil {
+	if app.chatters[chatterId] != nil {
 		return Error.New("Chatter already exists", nil)
 	}
-	chatter := NewChatter(chatterName)
-	app.chatters[chatterName] = chatter
+	chatter := NewChatter(chatterId)
+	app.chatters[chatterId] = chatter
 	return nil
 }
 
