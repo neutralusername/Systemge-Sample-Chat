@@ -10,7 +10,9 @@ import (
 
 func (app *App) GetSyncMessageHandlers() map[string]Application.SyncMessageHandler {
 	return map[string]Application.SyncMessageHandler{
-		topics.JOIN:  app.Join,
+		topics.JOIN: app.Join,
+		//leave needs to be sync because otherwise appChat will not receive the message using multi-modules as the onDisconnect() routine will only wait for the message to reach the broker with async messages.
+		//appChat will be stopped before the broker can route the message to the appChat module.
 		topics.LEAVE: app.Leave,
 	}
 }
