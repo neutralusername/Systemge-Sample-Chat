@@ -15,7 +15,7 @@ func (app *App) GetCustomCommandHandlers() map[string]Application.CustomCommandH
 func (app *App) GetChatters(args []string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
-	if len(args) < 1 {
+	if len(args) != 1 {
 		return Error.New("Invalid arguments", nil)
 	}
 	roomId := args[0]

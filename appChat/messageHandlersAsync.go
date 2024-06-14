@@ -16,7 +16,6 @@ func (app *App) GetAsyncMessageHandlers() map[string]Application.AsyncMessageHan
 func (app *App) AddMessage(message *Message.Message) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
-
 	chatter := app.chatters[message.GetOrigin()]
 	if chatter == nil {
 		return Error.New("Chatter not found", nil)
