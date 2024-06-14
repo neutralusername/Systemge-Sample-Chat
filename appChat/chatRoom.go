@@ -8,17 +8,17 @@ type Room struct {
 	id string //websocketServer groupId
 
 	//messages are stored in a ring buffer to limit memory usage per room
-	messageRingBuffer [RINGBUFFER_SIZE]*ChatMessage
-	currentIndex      int
-	chatters          map[string]*Chatter
+	messageRingBuffer           [RINGBUFFER_SIZE]*ChatMessage
+	messageRingBufferWriteIndex int
+	chatters                    map[string]*Chatter
 }
 
 func NewRoom(id string) *Room {
 	return &Room{
-		id:                id,
-		messageRingBuffer: [RINGBUFFER_SIZE]*ChatMessage{},
-		currentIndex:      0,
-		chatters:          map[string]*Chatter{},
+		id:                          id,
+		messageRingBuffer:           [RINGBUFFER_SIZE]*ChatMessage{},
+		messageRingBufferWriteIndex: 0,
+		chatters:                    map[string]*Chatter{},
 	}
 }
 

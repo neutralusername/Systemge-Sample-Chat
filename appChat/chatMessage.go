@@ -25,8 +25,8 @@ func (chatMessage *ChatMessage) Marshal() string {
 }
 
 func (room *Room) AddMessage(message *ChatMessage) {
-	room.messageRingBuffer[room.currentIndex] = message
-	room.currentIndex = (room.currentIndex + 1) % RINGBUFFER_SIZE
+	room.messageRingBuffer[room.messageRingBufferWriteIndex] = message
+	room.messageRingBufferWriteIndex = (room.messageRingBufferWriteIndex + 1) % RINGBUFFER_SIZE
 }
 
 func (app *App) GetRoomMessages(roomId string) []string {
@@ -36,7 +36,7 @@ func (app *App) GetRoomMessages(roomId string) []string {
 	}
 	messages := []string{}
 	for i := 0; i < RINGBUFFER_SIZE; i++ {
-		if message := room.messageRingBuffer[(room.currentIndex+i)%RINGBUFFER_SIZE]; message != nil {
+		if message := room.messageRingBuffer[(room.messageRingBufferWriteIndex+i)%RINGBUFFER_SIZE]; message != nil {
 			messages = append(messages, message.Marshal())
 		}
 	}
