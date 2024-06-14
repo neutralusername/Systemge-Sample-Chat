@@ -33,5 +33,6 @@ func (app *App) OnStart() error {
 }
 
 func (app *App) OnStop() error {
+	//an alternative solution to the problem of async messages not being received by appChat during stoping using multi-modules would be to remove all remaining chatters and all rooms here
 	return nil
 }
