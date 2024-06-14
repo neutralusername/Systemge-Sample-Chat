@@ -6,8 +6,7 @@ import (
 	"SystemgeSampleChat/appWebsocket"
 )
 
-const TOPICRESOLUTIONSERVER_ADDRESS = ":60000"
-const HTTP_DEV_PORT = ":8080"
+const TOPICRESOLUTIONSERVER_ADDRESS = "127.0.0.1:60000"
 const WEBSOCKET_PORT = ":8443"
 
 const ERROR_LOG_FILE_PATH = "error.log"
