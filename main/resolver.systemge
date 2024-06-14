@@ -1,8 +1,11 @@
 # resolver
 :60000
 
-joinRoom 127.0.0.1:60004
-leave 127.0.0.1:60004
-addMessage 127.0.0.1:60004
+brokerChat 127.0.0.1:60004 ./MyCertificate.crt
+brokerWebsocket 127.0.0.1:60003 ./MyCertificate.crt
 
-propagateMessage 127.0.0.1:60003
+joinRoom brokerChat
+leave brokerChat
+addMessage brokerChat
+
+propagateMessage brokerWebsocket

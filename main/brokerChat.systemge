@@ -1,5 +1,8 @@
 # broker
 :60004
+key ./MyKey.key
+cert ./MyCertificate.crt
+
 joinRoom sync
 leave sync
 addMessage async
