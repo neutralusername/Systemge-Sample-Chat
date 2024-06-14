@@ -1,5 +1,5 @@
 # broker
 :60004
-joinRoom
-leave
-addMessage
+joinRoom sync
+leave sync
+addMessage async
