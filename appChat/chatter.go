@@ -7,16 +7,16 @@ type Chatter struct {
 	roomId string
 }
 
-func (app *App) AddChatter(chatterId string) (*Chatter, error) {
+func (app *App) AddChatter(chatterName string) (*Chatter, error) {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
-	if app.chatters[chatterId] != nil {
+	if app.chatters[chatterName] != nil {
 		return nil, Error.New("Chatter already exists", nil)
 	}
 	chatter := &Chatter{
-		name: chatterId,
+		name: chatterName,
 	}
-	app.chatters[chatterId] = chatter
+	app.chatters[chatterName] = chatter
 	return chatter, nil
 }
 
