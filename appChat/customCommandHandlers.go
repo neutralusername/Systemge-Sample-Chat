@@ -2,7 +2,7 @@ package appChat
 
 import (
 	"Systemge/Application"
-	"Systemge/Error"
+	"Systemge/Utilities"
 )
 
 func (app *App) GetCustomCommandHandlers() map[string]Application.CustomCommandHandler {
@@ -16,11 +16,11 @@ func (app *App) GetChatters(args []string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	if len(args) != 1 {
-		return Error.New("Invalid arguments", nil)
+		return Utilities.NewError("Invalid arguments", nil)
 	}
 	room := app.rooms[args[0]]
 	if room == nil {
-		return Error.New("Room not found", nil)
+		return Utilities.NewError("Room not found", nil)
 	}
 	for _, chatter := range room.chatters {
 		println(chatter.id)

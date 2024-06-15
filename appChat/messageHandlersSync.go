@@ -2,7 +2,6 @@ package appChat
 
 import (
 	"Systemge/Application"
-	"Systemge/Error"
 	"Systemge/Message"
 	"Systemge/Utilities"
 	"SystemgeSampleChat/topics"
@@ -20,20 +19,20 @@ func (app *App) GetSyncMessageHandlers() map[string]Application.SyncMessageHandl
 
 func (app *App) Join(message *Message.Message) (string, error) {
 	if err := app.AddChatter(message.GetOrigin()); err != nil {
-		return "", Error.New("Failed to create chatter", err)
+		return "", Utilities.NewError("Failed to create chatter", err)
 	}
 	if err := app.AddToRoom(message.GetOrigin(), message.GetPayload()); err != nil {
-		return "", Error.New("Failed to join room", err)
+		return "", Utilities.NewError("Failed to join room", err)
 	}
 	return Utilities.StringsToJsonObjectArray(app.GetRoomMessages(message.GetPayload())), nil
 }
 
 func (app *App) Leave(message *Message.Message) (string, error) {
 	if err := app.RemoveFromRoom(message.GetOrigin()); err != nil {
-		return "", Error.New("Failed to leave room", err)
+		return "", Utilities.NewError("Failed to leave room", err)
 	}
 	if err := app.RemoveChatter(message.GetOrigin()); err != nil {
-		return "", Error.New("Failed to leave room", err)
+		return "", Utilities.NewError("Failed to leave room", err)
 	}
 	return "", nil
 }

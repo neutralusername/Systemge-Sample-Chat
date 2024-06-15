@@ -3,8 +3,8 @@ package appWebsocket
 import (
 	"Systemge/Application"
 	"Systemge/Client"
-	"Systemge/Error"
 	"Systemge/Message"
+	"Systemge/Utilities"
 	"Systemge/WebsocketClient"
 	"SystemgeSampleChat/topics"
 )
@@ -49,7 +49,7 @@ func (app *AppWebsocket) GetWebsocketMessageHandlers() map[string]Application.We
 		topics.ADD_MESSAGE: func(connection *WebsocketClient.Client, message *Message.Message) error {
 			err := app.client.AsyncMessage(message.GetTopic(), connection.GetId(), message.GetPayload())
 			if err != nil {
-				app.client.GetLogger().Log(Error.New("Failed to send message", err).Error())
+				app.client.GetLogger().Log(Utilities.NewError("Failed to send message", err).Error())
 			}
 			return nil
 		},
@@ -60,12 +60,12 @@ func (app *AppWebsocket) OnConnectHandler(connection *WebsocketClient.Client) {
 	err := app.client.GetWebsocketServer().AddToGroup("lobby", connection.GetId())
 	if err != nil {
 		connection.Disconnect()
-		app.client.GetLogger().Log(Error.New("Failed to add to group", err).Error())
+		app.client.GetLogger().Log(Utilities.NewError("Failed to add to group", err).Error())
 	}
 	response, err := app.client.SyncMessage(topics.JOIN, connection.GetId(), "lobby")
 	if err != nil {
 		connection.Disconnect()
-		app.client.GetLogger().Log(Error.New("Failed to join room", err).Error())
+		app.client.GetLogger().Log(Utilities.NewError("Failed to join room", err).Error())
 	}
 	connection.Send([]byte(response.Serialize()))
 }
@@ -73,10 +73,10 @@ func (app *AppWebsocket) OnConnectHandler(connection *WebsocketClient.Client) {
 func (app *AppWebsocket) OnDisconnectHandler(connection *WebsocketClient.Client) {
 	err := app.client.GetWebsocketServer().RemoveFromGroup("lobby", connection.GetId())
 	if err != nil {
-		app.client.GetLogger().Log(Error.New("Failed to remove from group", err).Error())
+		app.client.GetLogger().Log(Utilities.NewError("Failed to remove from group", err).Error())
 	}
 	_, err = app.client.SyncMessage(topics.LEAVE, connection.GetId(), "")
 	if err != nil {
-		app.client.GetLogger().Log(Error.New("Failed to leave room", err).Error())
+		app.client.GetLogger().Log(Utilities.NewError("Failed to leave room", err).Error())
 	}
 }

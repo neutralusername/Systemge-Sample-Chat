@@ -2,8 +2,8 @@ package appChat
 
 import (
 	"Systemge/Application"
-	"Systemge/Error"
 	"Systemge/Message"
+	"Systemge/Utilities"
 	"SystemgeSampleChat/topics"
 )
 
@@ -18,11 +18,11 @@ func (app *App) AddMessage(message *Message.Message) error {
 	defer app.mutex.Unlock()
 	chatter := app.chatters[message.GetOrigin()]
 	if chatter == nil {
-		return Error.New("Chatter not found", nil)
+		return Utilities.NewError("Chatter not found", nil)
 	}
 	room := app.rooms[chatter.roomId]
 	if room == nil {
-		return Error.New("Room not found", nil)
+		return Utilities.NewError("Room not found", nil)
 	}
 	chatMessage := NewChatMessage(chatter.id, message.GetPayload())
 	room.AddMessage(chatMessage)
