@@ -26,6 +26,6 @@ func (app *App) AddMessage(message *Message.Message) error {
 	}
 	chatMessage := NewChatMessage(chatter.id, message.GetPayload())
 	room.AddMessage(chatMessage)
-	app.messageBrokerClient.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
+	app.client.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
 	return nil
 }

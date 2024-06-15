@@ -2,24 +2,21 @@ package appChat
 
 import (
 	"Systemge/Application"
-	"Systemge/MessageBrokerClient"
-	"Systemge/Utilities"
+	"Systemge/Client"
 	"sync"
 )
 
 type App struct {
-	logger              *Utilities.Logger
-	messageBrokerClient *MessageBrokerClient.Client
+	client *Client.Client
 
 	rooms    map[string]*Room    //roomId -> room
 	chatters map[string]*Chatter //chatterId -> chatter
 	mutex    sync.Mutex
 }
 
-func New(logger *Utilities.Logger, messageBrokerClient *MessageBrokerClient.Client) Application.Application {
+func New(client *Client.Client, args []string) Application.Application {
 	app := &App{
-		logger:              logger,
-		messageBrokerClient: messageBrokerClient,
+		client: client,
 
 		rooms:    map[string]*Room{},
 		chatters: map[string]*Chatter{},
