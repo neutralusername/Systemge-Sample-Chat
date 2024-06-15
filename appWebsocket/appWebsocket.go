@@ -9,25 +9,25 @@ import (
 	"SystemgeSampleChat/topics"
 )
 
-type WebsocketApp struct {
+type AppWebsocket struct {
 	client *Client.Client
 }
 
 func New(client *Client.Client, args []string) Application.WebsocketApplication {
-	return &WebsocketApp{
+	return &AppWebsocket{
 		client: client,
 	}
 }
 
-func (app *WebsocketApp) OnStart() error {
+func (app *AppWebsocket) OnStart() error {
 	return nil
 }
 
-func (app *WebsocketApp) OnStop() error {
+func (app *AppWebsocket) OnStop() error {
 	return nil
 }
 
-func (app *WebsocketApp) GetAsyncMessageHandlers() map[string]Application.AsyncMessageHandler {
+func (app *AppWebsocket) GetAsyncMessageHandlers() map[string]Application.AsyncMessageHandler {
 	return map[string]Application.AsyncMessageHandler{
 		topics.PROPAGATE_MESSAGE: func(message *Message.Message) error {
 			app.client.GetWebsocketServer().Groupcast(message.GetOrigin(), message)
@@ -36,15 +36,15 @@ func (app *WebsocketApp) GetAsyncMessageHandlers() map[string]Application.AsyncM
 	}
 }
 
-func (app *WebsocketApp) GetSyncMessageHandlers() map[string]Application.SyncMessageHandler {
+func (app *AppWebsocket) GetSyncMessageHandlers() map[string]Application.SyncMessageHandler {
 	return map[string]Application.SyncMessageHandler{}
 }
 
-func (app *WebsocketApp) GetCustomCommandHandlers() map[string]Application.CustomCommandHandler {
+func (app *AppWebsocket) GetCustomCommandHandlers() map[string]Application.CustomCommandHandler {
 	return map[string]Application.CustomCommandHandler{}
 }
 
-func (app *WebsocketApp) GetWebsocketMessageHandlers() map[string]Application.WebsocketMessageHandler {
+func (app *AppWebsocket) GetWebsocketMessageHandlers() map[string]Application.WebsocketMessageHandler {
 	return map[string]Application.WebsocketMessageHandler{
 		topics.ADD_MESSAGE: func(connection *WebsocketClient.Client, message *Message.Message) error {
 			err := app.client.AsyncMessage(message.GetTopic(), connection.GetId(), message.GetPayload())
@@ -56,7 +56,7 @@ func (app *WebsocketApp) GetWebsocketMessageHandlers() map[string]Application.We
 	}
 }
 
-func (app *WebsocketApp) OnConnectHandler(connection *WebsocketClient.Client) {
+func (app *AppWebsocket) OnConnectHandler(connection *WebsocketClient.Client) {
 	err := app.client.GetWebsocketServer().AddToGroup("lobby", connection.GetId())
 	if err != nil {
 		connection.Disconnect()
@@ -70,7 +70,7 @@ func (app *WebsocketApp) OnConnectHandler(connection *WebsocketClient.Client) {
 	connection.Send([]byte(response.Serialize()))
 }
 
-func (app *WebsocketApp) OnDisconnectHandler(connection *WebsocketClient.Client) {
+func (app *AppWebsocket) OnDisconnectHandler(connection *WebsocketClient.Client) {
 	err := app.client.GetWebsocketServer().RemoveFromGroup("lobby", connection.GetId())
 	if err != nil {
 		app.client.GetLogger().Log(Error.New("Failed to remove from group", err).Error())
