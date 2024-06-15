@@ -2,5 +2,5 @@
 resolver :60000
 config :60001 ./MyCertificate.crt ./MyKey.key
 
-brokerChat 127.0.0.1:60005 ./MyCertificate.crt joinRoom leave addMessage
-brokerWebsocket 127.0.0.1:60003 ./MyCertificate.crt propagateMessage
+brokerChat 127.0.0.1:60005 127.0.0.1 ./MyCertificate.crt joinRoom leave addMessage
+brokerWebsocket 127.0.0.1:60003 127.0.0.1 ./MyCertificate.crt propagateMessage
