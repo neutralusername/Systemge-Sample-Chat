@@ -1,7 +1,6 @@
 # broker
-:60004
-key ./MyKey.key
-cert ./MyCertificate.crt
+broker :60005 ./MyCertificate.crt ./MyKey.key
+config :60006 ./MyCertificate.crt ./MyKey.key
 
 joinRoom sync
 leave sync

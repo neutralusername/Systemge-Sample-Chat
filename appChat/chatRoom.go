@@ -54,6 +54,7 @@ func (app *App) RemoveFromRoom(chatterId string) error {
 	if len(room.chatters) == 0 {
 		delete(app.rooms, chatter.roomId)
 	}
+	chatter.roomId = ""
 	return nil
 
 }

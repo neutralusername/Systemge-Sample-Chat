@@ -1,6 +1,5 @@
 # broker
-:60003
-key ./MyKey.key
-cert ./MyCertificate.crt
+broker :60003 ./MyCertificate.crt ./MyKey.key
+config :60004 ./MyCertificate.crt ./MyKey.key
 
 propagateMessage async
