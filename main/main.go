@@ -38,5 +38,5 @@ func main() {
 		clientWebsocket,
 		clientChat,
 		Module.NewHTTPServerFromConfig("httpServe.systemge", ERROR_LOG_FILE_PATH),
-	), Module.MergeCustomCommandHandlers(clientChat.GetApplication().GetCustomCommandHandlers(), clientWebsocket.GetWebsocketServer().GetCustomCommandHandlers()))
+	), clientChat.GetApplication().GetCustomCommandHandlers(), clientWebsocket.GetWebsocketServer().GetCustomCommandHandlers())
 }
