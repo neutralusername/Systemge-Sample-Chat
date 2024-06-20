@@ -3,11 +3,12 @@ package main
 import (
 	"Systemge/Module"
 	"SystemgeSampleChat/appChat"
-	"SystemgeSampleChat/appWebsocket"
+	"SystemgeSampleChat/appWebsocketHTTP"
 )
 
 const TOPICRESOLUTIONSERVER_ADDRESS = "127.0.0.1:60000"
 const WEBSOCKET_PORT = ":8443"
+const HTTP_PORT = ":8080"
 
 const ERROR_LOG_FILE_PATH = "error.log"
 
@@ -30,13 +31,12 @@ func main() {
 	}
 
 	clientChat := Module.NewClient("clientApp", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, appChat.New, nil)
-	clientWebsocket := Module.NewWebsocketClient("clientWebsocket", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, "/ws", WEBSOCKET_PORT, "", "", appWebsocket.New, nil)
+	clientWebsocket := Module.NewCompositeClientWebsocketHTTP("clientWebsocket", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, "/ws", WEBSOCKET_PORT, "", "", HTTP_PORT, "", "", appWebsocketHTTP.New, nil)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client/chatter has disconnected.
 		//if the chat app is stopped before the websocket app, the websocket app will not be able to communicate to the chat app that the client/chatter has disconnected.
 		//which results in the chat app having chatters that will never be removed.
 		clientWebsocket,
 		clientChat,
-		Module.NewHTTPServerFromConfig("httpServe.systemge", ERROR_LOG_FILE_PATH),
 	), clientChat.GetApplication().GetCustomCommandHandlers(), clientWebsocket.GetWebsocketServer().GetCustomCommandHandlers())
 }
