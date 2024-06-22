@@ -29,9 +29,23 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	clientChat := Module.NewClient("clientApp", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, appChat.New, nil)
-	clientWebsocket := Module.NewCompositeClientWebsocketHTTP("clientWebsocket", TOPICRESOLUTIONSERVER_ADDRESS, ERROR_LOG_FILE_PATH, "/ws", WEBSOCKET_PORT, "", "", HTTP_PORT, "", "", appWebsocketHTTP.New, nil)
+	clientChat := Module.NewClient(&Module.ClientConfig{
+		Name:            "clientApp",
+		ResolverAddress: TOPICRESOLUTIONSERVER_ADDRESS,
+		LoggerPath:      ERROR_LOG_FILE_PATH,
+	}, appChat.New, nil)
+	clientWebsocket := Module.NewCompositeClientWebsocketHTTP(&Module.ClientConfig{
+		Name:             "clientWebsocket",
+		ResolverAddress:  TOPICRESOLUTIONSERVER_ADDRESS,
+		LoggerPath:       ERROR_LOG_FILE_PATH,
+		WebsocketPattern: "/ws",
+		WebsocketPort:    WEBSOCKET_PORT,
+		WebsocketCert:    "",
+		WebsocketKey:     "",
+		HTTPPort:         HTTP_PORT,
+		HTTPCert:         "",
+		HTTPKey:          "",
+	}, appWebsocketHTTP.New, nil)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client/chatter has disconnected.
 		//if the chat app is stopped before the websocket app, the websocket app will not be able to communicate to the chat app that the client/chatter has disconnected.
