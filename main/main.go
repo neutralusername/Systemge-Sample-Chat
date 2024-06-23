@@ -6,7 +6,9 @@ import (
 	"SystemgeSampleChat/appWebsocketHTTP"
 )
 
-const TOPICRESOLUTIONSERVER_ADDRESS = "127.0.0.1:60000"
+const RESOLVER_ADDRESS = "127.0.0.1:60000"
+const RESOLVER_NAME_INDICATION = "127.0.0.1"
+const RESOLVER_TLS_CERT_PATH = "MyCertificate.crt"
 const WEBSOCKET_PORT = ":8443"
 const HTTP_PORT = ":8080"
 
@@ -30,21 +32,19 @@ func main() {
 		panic(err)
 	}
 	clientChat := Module.NewClient(&Module.ClientConfig{
-		Name:            "clientApp",
-		ResolverAddress: TOPICRESOLUTIONSERVER_ADDRESS,
-		LoggerPath:      ERROR_LOG_FILE_PATH,
+		Name:                   "clientApp",
+		ResolverAddress:        RESOLVER_ADDRESS,
+		ResolverNameIndication: RESOLVER_NAME_INDICATION,
+		ResolverTLSCertPath:    RESOLVER_TLS_CERT_PATH,
+		LoggerPath:             ERROR_LOG_FILE_PATH,
 	}, appChat.New, nil)
 	clientWebsocket := Module.NewCompositeClientWebsocketHTTP(&Module.ClientConfig{
 		Name:             "clientWebsocket",
-		ResolverAddress:  TOPICRESOLUTIONSERVER_ADDRESS,
+		ResolverAddress:  RESOLVER_ADDRESS,
 		LoggerPath:       ERROR_LOG_FILE_PATH,
 		WebsocketPattern: "/ws",
 		WebsocketPort:    WEBSOCKET_PORT,
-		WebsocketCert:    "",
-		WebsocketKey:     "",
 		HTTPPort:         HTTP_PORT,
-		HTTPCert:         "",
-		HTTPKey:          "",
 	}, appWebsocketHTTP.New, nil)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client/chatter has disconnected.
