@@ -39,12 +39,14 @@ func main() {
 		LoggerPath:             ERROR_LOG_FILE_PATH,
 	}, appChat.New, nil)
 	clientWebsocket := Module.NewCompositeClientWebsocketHTTP(&Module.ClientConfig{
-		Name:             "clientWebsocketHTTP",
-		ResolverAddress:  RESOLVER_ADDRESS,
-		LoggerPath:       ERROR_LOG_FILE_PATH,
-		WebsocketPattern: "/ws",
-		WebsocketPort:    WEBSOCKET_PORT,
-		HTTPPort:         HTTP_PORT,
+		Name:                   "clientWebsocketHTTP",
+		ResolverAddress:        RESOLVER_ADDRESS,
+		ResolverNameIndication: RESOLVER_NAME_INDICATION,
+		ResolverTLSCertPath:    RESOLVER_TLS_CERT_PATH,
+		WebsocketPattern:       "/ws",
+		WebsocketPort:          WEBSOCKET_PORT,
+		HTTPPort:               HTTP_PORT,
+		LoggerPath:             ERROR_LOG_FILE_PATH,
 	}, appWebsocketHTTP.New, nil)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client/chatter has disconnected.
