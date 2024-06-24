@@ -39,7 +39,7 @@ func main() {
 		LoggerPath:             ERROR_LOG_FILE_PATH,
 	}, appChat.New, nil)
 	clientWebsocket := Module.NewCompositeClientWebsocketHTTP(&Module.ClientConfig{
-		Name:             "clientWebsocket",
+		Name:             "clientWebsocketHTTP",
 		ResolverAddress:  RESOLVER_ADDRESS,
 		LoggerPath:       ERROR_LOG_FILE_PATH,
 		WebsocketPattern: "/ws",
