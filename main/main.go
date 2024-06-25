@@ -35,22 +35,24 @@ func main() {
 	}
 
 	clientChat := Module.NewClient(&Client.Config{
-		Name:                   "clientApp",
-		ResolverAddress:        RESOLVER_ADDRESS,
-		ResolverNameIndication: RESOLVER_NAME_INDICATION,
-		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
-		LoggerPath:             ERROR_LOG_FILE_PATH,
+		Name:                       "clientApp",
+		ResolverAddress:            RESOLVER_ADDRESS,
+		ResolverNameIndication:     RESOLVER_NAME_INDICATION,
+		ResolverTLSCert:            Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
+		LoggerPath:                 ERROR_LOG_FILE_PATH,
+		HandleMessagesConcurrently: true,
 	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
 	clientWebsocket := Module.NewClient(&Client.Config{
-		Name:                   "clientWebsocketHTTP",
-		ResolverAddress:        RESOLVER_ADDRESS,
-		ResolverNameIndication: RESOLVER_NAME_INDICATION,
-		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
-		WebsocketPattern:       "/ws",
-		WebsocketPort:          WEBSOCKET_PORT,
-		HTTPPort:               HTTP_PORT,
-		LoggerPath:             ERROR_LOG_FILE_PATH,
+		Name:                       "clientWebsocketHTTP",
+		ResolverAddress:            RESOLVER_ADDRESS,
+		ResolverNameIndication:     RESOLVER_NAME_INDICATION,
+		ResolverTLSCert:            Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
+		WebsocketPattern:           "/ws",
+		WebsocketPort:              WEBSOCKET_PORT,
+		HTTPPort:                   HTTP_PORT,
+		LoggerPath:                 ERROR_LOG_FILE_PATH,
+		HandleMessagesConcurrently: true,
 	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client/chatter has disconnected.
