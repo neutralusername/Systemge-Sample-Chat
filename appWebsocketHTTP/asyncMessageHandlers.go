@@ -13,6 +13,6 @@ func (app *AppWebsocketHTTP) GetAsyncMessageHandlers() map[string]Client.AsyncMe
 }
 
 func (app *AppWebsocketHTTP) PropagateMessage(client *Client.Client, message *Message.Message) error {
-	client.Groupcast(message.GetOrigin(), message)
+	client.WebsocketGroupcast(message.GetOrigin(), message)
 	return nil
 }
