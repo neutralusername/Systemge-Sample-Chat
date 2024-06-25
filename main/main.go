@@ -1,7 +1,9 @@
 package main
 
 import (
+	"Systemge/Client"
 	"Systemge/Module"
+	"Systemge/Utilities"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
 )
@@ -31,28 +33,30 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	clientChat := Module.NewClient(&Module.ClientConfig{
+
+	clientChat := Module.NewClient(&Client.Config{
 		Name:                   "clientApp",
 		ResolverAddress:        RESOLVER_ADDRESS,
 		ResolverNameIndication: RESOLVER_NAME_INDICATION,
-		ResolverTLSCertPath:    RESOLVER_TLS_CERT_PATH,
+		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
 		LoggerPath:             ERROR_LOG_FILE_PATH,
-	}, appChat.New, nil)
-	clientWebsocket := Module.NewCompositeClientWebsocketHTTP(&Module.ClientConfig{
+	}, appChat.New(), nil, nil)
+	appWebsocketHTTP := appWebsocketHTTP.New()
+	clientWebsocket := Module.NewClient(&Client.Config{
 		Name:                   "clientWebsocketHTTP",
 		ResolverAddress:        RESOLVER_ADDRESS,
 		ResolverNameIndication: RESOLVER_NAME_INDICATION,
-		ResolverTLSCertPath:    RESOLVER_TLS_CERT_PATH,
+		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
 		WebsocketPattern:       "/ws",
 		WebsocketPort:          WEBSOCKET_PORT,
 		HTTPPort:               HTTP_PORT,
 		LoggerPath:             ERROR_LOG_FILE_PATH,
-	}, appWebsocketHTTP.New, nil)
+	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client/chatter has disconnected.
 		//if the chat app is stopped before the websocket app, the websocket app will not be able to communicate to the chat app that the client/chatter has disconnected.
 		//which results in the chat app having chatters that will never be removed.
 		clientWebsocket,
 		clientChat,
-	), clientChat.GetApplication().GetCustomCommandHandlers(), clientWebsocket.GetWebsocketServer().GetCustomCommandHandlers())
+	))
 }

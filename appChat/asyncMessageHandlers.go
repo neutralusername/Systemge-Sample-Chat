@@ -1,19 +1,19 @@
 package appChat
 
 import (
-	"Systemge/Application"
+	"Systemge/Client"
 	"Systemge/Message"
 	"Systemge/Utilities"
 	"SystemgeSampleChat/topics"
 )
 
-func (app *App) GetAsyncMessageHandlers() map[string]Application.AsyncMessageHandler {
-	return map[string]Application.AsyncMessageHandler{
+func (app *App) GetAsyncMessageHandlers() map[string]Client.AsyncMessageHandler {
+	return map[string]Client.AsyncMessageHandler{
 		topics.ADD_MESSAGE: app.AddMessage,
 	}
 }
 
-func (app *App) AddMessage(message *Message.Message) error {
+func (app *App) AddMessage(client *Client.Client, message *Message.Message) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	chatter := app.chatters[message.GetOrigin()]
@@ -26,6 +26,6 @@ func (app *App) AddMessage(message *Message.Message) error {
 	}
 	chatMessage := NewChatMessage(chatter.id, message.GetPayload())
 	room.AddMessage(chatMessage)
-	app.client.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
+	client.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
 	return nil
 }

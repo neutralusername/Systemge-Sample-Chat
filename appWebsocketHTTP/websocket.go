@@ -1,46 +1,48 @@
 package appWebsocketHTTP
 
 import (
-	"Systemge/Application"
+	"Systemge/Client"
 	"Systemge/Message"
 	"Systemge/Utilities"
 	"Systemge/WebsocketClient"
 	"SystemgeSampleChat/topics"
 )
 
-func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Application.WebsocketMessageHandler {
-	return map[string]Application.WebsocketMessageHandler{
-		topics.ADD_MESSAGE: func(connection *WebsocketClient.Client, message *Message.Message) error {
-			err := app.client.AsyncMessage(message.GetTopic(), connection.GetId(), message.GetPayload())
-			if err != nil {
-				app.client.GetLogger().Log(Utilities.NewError("Failed to send message", err).Error())
-			}
-			return nil
-		},
+func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Client.WebsocketMessageHandler {
+	return map[string]Client.WebsocketMessageHandler{
+		topics.ADD_MESSAGE: app.AddMessage,
 	}
 }
 
-func (app *AppWebsocketHTTP) OnConnectHandler(connection *WebsocketClient.Client) {
-	err := app.client.GetWebsocketServer().AddToGroup("lobby", connection.GetId())
+func (app *AppWebsocketHTTP) AddMessage(client *Client.Client, connection *WebsocketClient.Client, message *Message.Message) error {
+	err := client.AsyncMessage(topics.ADD_MESSAGE, connection.GetId(), message.GetPayload())
 	if err != nil {
-		connection.Disconnect()
-		app.client.GetLogger().Log(Utilities.NewError("Failed to add to group", err).Error())
+		client.GetLogger().Log(Utilities.NewError("Failed to send message", err).Error())
 	}
-	response, err := app.client.SyncMessage(topics.JOIN, connection.GetId(), "lobby")
-	if err != nil {
-		connection.Disconnect()
-		app.client.GetLogger().Log(Utilities.NewError("Failed to join room", err).Error())
-	}
-	connection.Send([]byte(response.Serialize()))
+	return nil
 }
 
-func (app *AppWebsocketHTTP) OnDisconnectHandler(connection *WebsocketClient.Client) {
-	err := app.client.GetWebsocketServer().RemoveFromGroup("lobby", connection.GetId())
+func (app *AppWebsocketHTTP) OnConnectHandler(client *Client.Client, websocketClient *WebsocketClient.Client) {
+	err := client.AddToGroup("lobby", websocketClient.GetId())
 	if err != nil {
-		app.client.GetLogger().Log(Utilities.NewError("Failed to remove from group", err).Error())
+		websocketClient.Disconnect()
+		client.GetLogger().Log(Utilities.NewError("Failed to add to group", err).Error())
 	}
-	_, err = app.client.SyncMessage(topics.LEAVE, connection.GetId(), "")
+	response, err := client.SyncMessage(topics.JOIN, websocketClient.GetId(), "lobby")
 	if err != nil {
-		app.client.GetLogger().Log(Utilities.NewError("Failed to leave room", err).Error())
+		websocketClient.Disconnect()
+		client.GetLogger().Log(Utilities.NewError("Failed to join room", err).Error())
+	}
+	websocketClient.Send([]byte(response.Serialize()))
+}
+
+func (app *AppWebsocketHTTP) OnDisconnectHandler(client *Client.Client, websocketClient *WebsocketClient.Client) {
+	err := client.RemoveFromGroup("lobby", websocketClient.GetId())
+	if err != nil {
+		client.GetLogger().Log(Utilities.NewError("Failed to remove from group", err).Error())
+	}
+	_, err = client.SyncMessage(topics.LEAVE, websocketClient.GetId(), "")
+	if err != nil {
+		client.GetLogger().Log(Utilities.NewError("Failed to leave room", err).Error())
 	}
 }

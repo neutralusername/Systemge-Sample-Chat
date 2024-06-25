@@ -1,16 +1,18 @@
 package appWebsocketHTTP
 
 import (
-	"Systemge/Application"
+	"Systemge/Client"
 	"Systemge/Message"
 	"SystemgeSampleChat/topics"
 )
 
-func (app *AppWebsocketHTTP) GetAsyncMessageHandlers() map[string]Application.AsyncMessageHandler {
-	return map[string]Application.AsyncMessageHandler{
-		topics.PROPAGATE_MESSAGE: func(message *Message.Message) error {
-			app.client.GetWebsocketServer().Groupcast(message.GetOrigin(), message)
-			return nil
-		},
+func (app *AppWebsocketHTTP) GetAsyncMessageHandlers() map[string]Client.AsyncMessageHandler {
+	return map[string]Client.AsyncMessageHandler{
+		topics.PROPAGATE_MESSAGE: app.PropagateMessage,
 	}
+}
+
+func (app *AppWebsocketHTTP) PropagateMessage(client *Client.Client, message *Message.Message) error {
+	client.Groupcast(message.GetOrigin(), message)
+	return nil
 }
