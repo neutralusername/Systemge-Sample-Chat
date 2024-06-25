@@ -1,6 +1,6 @@
 package appChat
 
-import "Systemge/Utilities"
+import "Systemge/Error"
 
 const RINGBUFFER_SIZE = 7
 
@@ -27,7 +27,7 @@ func (app *App) AddToRoom(chatterid string, roomId string) error {
 	defer app.mutex.Unlock()
 	chatter := app.chatters[chatterid]
 	if chatter == nil {
-		return Utilities.NewError("Chatter not found", nil)
+		return Error.New("Chatter not found", nil)
 	}
 	room := app.rooms[roomId]
 	if room == nil {
@@ -44,11 +44,11 @@ func (app *App) RemoveFromRoom(chatterId string) error {
 	defer app.mutex.Unlock()
 	chatter := app.chatters[chatterId]
 	if chatter == nil {
-		return Utilities.NewError("Chatter not found", nil)
+		return Error.New("Chatter not found", nil)
 	}
 	room := app.rooms[chatter.roomId]
 	if room == nil {
-		return Utilities.NewError("Room not found", nil)
+		return Error.New("Room not found", nil)
 	}
 	delete(room.chatters, chatterId)
 	if len(room.chatters) == 0 {
