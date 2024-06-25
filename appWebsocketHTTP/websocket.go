@@ -4,7 +4,6 @@ import (
 	"Systemge/Client"
 	"Systemge/Message"
 	"Systemge/Utilities"
-	"Systemge/WebsocketClient"
 	"SystemgeSampleChat/topics"
 )
 
@@ -14,7 +13,7 @@ func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Client.Web
 	}
 }
 
-func (app *AppWebsocketHTTP) AddMessage(client *Client.Client, connection *WebsocketClient.Client, message *Message.Message) error {
+func (app *AppWebsocketHTTP) AddMessage(client *Client.Client, connection *Client.WebsocketClient, message *Message.Message) error {
 	err := client.AsyncMessage(topics.ADD_MESSAGE, connection.GetId(), message.GetPayload())
 	if err != nil {
 		client.GetLogger().Log(Utilities.NewError("Failed to send message", err).Error())
@@ -22,7 +21,7 @@ func (app *AppWebsocketHTTP) AddMessage(client *Client.Client, connection *Webso
 	return nil
 }
 
-func (app *AppWebsocketHTTP) OnConnectHandler(client *Client.Client, websocketClient *WebsocketClient.Client) {
+func (app *AppWebsocketHTTP) OnConnectHandler(client *Client.Client, websocketClient *Client.WebsocketClient) {
 	err := client.AddToGroup("lobby", websocketClient.GetId())
 	if err != nil {
 		websocketClient.Disconnect()
@@ -36,7 +35,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(client *Client.Client, websocketCl
 	websocketClient.Send([]byte(response.Serialize()))
 }
 
-func (app *AppWebsocketHTTP) OnDisconnectHandler(client *Client.Client, websocketClient *WebsocketClient.Client) {
+func (app *AppWebsocketHTTP) OnDisconnectHandler(client *Client.Client, websocketClient *Client.WebsocketClient) {
 	err := client.RemoveFromGroup("lobby", websocketClient.GetId())
 	if err != nil {
 		client.GetLogger().Log(Utilities.NewError("Failed to remove from group", err).Error())
