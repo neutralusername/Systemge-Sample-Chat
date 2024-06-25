@@ -22,7 +22,7 @@ func (app *AppWebsocketHTTP) AddMessage(client *Client.Client, connection *Clien
 }
 
 func (app *AppWebsocketHTTP) OnConnectHandler(client *Client.Client, websocketClient *Client.WebsocketClient) {
-	err := client.AddToGroup("lobby", websocketClient.GetId())
+	err := client.AddToWebsocketGroup("lobby", websocketClient.GetId())
 	if err != nil {
 		websocketClient.Disconnect()
 		client.GetLogger().Log(Utilities.NewError("Failed to add to group", err).Error())
@@ -36,7 +36,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(client *Client.Client, websocketCl
 }
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(client *Client.Client, websocketClient *Client.WebsocketClient) {
-	err := client.RemoveFromGroup("lobby", websocketClient.GetId())
+	err := client.RemoveFromWebsocketGroup("lobby", websocketClient.GetId())
 	if err != nil {
 		client.GetLogger().Log(Utilities.NewError("Failed to remove from group", err).Error())
 	}
