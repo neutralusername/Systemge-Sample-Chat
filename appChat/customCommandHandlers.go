@@ -1,18 +1,18 @@
 package appChat
 
 import (
-	"Systemge/Client"
 	"Systemge/Error"
+	"Systemge/Node"
 )
 
-func (app *App) GetCustomCommandHandlers() map[string]Client.CustomCommandHandler {
-	return map[string]Client.CustomCommandHandler{
+func (app *App) GetCustomCommandHandlers() map[string]Node.CustomCommandHandler {
+	return map[string]Node.CustomCommandHandler{
 		"getChatters": app.GetChatters,
 		"getRooms":    app.GetRooms,
 	}
 }
 
-func (app *App) GetChatters(client *Client.Client, args []string) error {
+func (app *App) GetChatters(client *Node.Node, args []string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	if len(args) != 1 {
@@ -28,7 +28,7 @@ func (app *App) GetChatters(client *Client.Client, args []string) error {
 	return nil
 }
 
-func (app *App) GetRooms(client *Client.Client, args []string) error {
+func (app *App) GetRooms(client *Node.Node, args []string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	for roomId := range app.rooms {

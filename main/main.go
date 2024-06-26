@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Systemge/Client"
 	"Systemge/Module"
+	"Systemge/Node"
 	"Systemge/Utilities"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
@@ -34,7 +34,7 @@ func main() {
 		panic(err)
 	}
 
-	clientChat := Module.NewClient(&Client.Config{
+	clientChat := Module.NewClient(&Node.Config{
 		Name:                   "clientApp",
 		ResolverAddress:        RESOLVER_ADDRESS,
 		ResolverNameIndication: RESOLVER_NAME_INDICATION,
@@ -42,7 +42,7 @@ func main() {
 		LoggerPath:             ERROR_LOG_FILE_PATH,
 	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
-	clientWebsocket := Module.NewClient(&Client.Config{
+	clientWebsocket := Module.NewClient(&Node.Config{
 		Name:                   "clientWebsocketHTTP",
 		ResolverAddress:        RESOLVER_ADDRESS,
 		ResolverNameIndication: RESOLVER_NAME_INDICATION,

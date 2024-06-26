@@ -1,9 +1,9 @@
 package appWebsocketHTTP
 
 import (
-	"Systemge/Client"
+	"Systemge/Node"
 )
 
-func (app *AppWebsocketHTTP) GetSyncMessageHandlers() map[string]Client.SyncMessageHandler {
-	return map[string]Client.SyncMessageHandler{}
+func (app *AppWebsocketHTTP) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
+	return map[string]Node.SyncMessageHandler{}
 }

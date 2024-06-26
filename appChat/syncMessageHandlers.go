@@ -1,21 +1,21 @@
 package appChat
 
 import (
-	"Systemge/Client"
 	"Systemge/Error"
 	"Systemge/Message"
+	"Systemge/Node"
 	"Systemge/Utilities"
 	"SystemgeSampleChat/topics"
 )
 
-func (app *App) GetSyncMessageHandlers() map[string]Client.SyncMessageHandler {
-	return map[string]Client.SyncMessageHandler{
+func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
+	return map[string]Node.SyncMessageHandler{
 		topics.JOIN:  app.Join,
 		topics.LEAVE: app.Leave,
 	}
 }
 
-func (app *App) Join(client *Client.Client, message *Message.Message) (string, error) {
+func (app *App) Join(client *Node.Node, message *Message.Message) (string, error) {
 	if err := app.AddChatter(message.GetOrigin()); err != nil {
 		return "", Error.New("Failed to create chatter", err)
 	}
@@ -25,7 +25,7 @@ func (app *App) Join(client *Client.Client, message *Message.Message) (string, e
 	return Utilities.StringsToJsonObjectArray(app.GetRoomMessages(message.GetPayload())), nil
 }
 
-func (app *App) Leave(client *Client.Client, message *Message.Message) (string, error) {
+func (app *App) Leave(client *Node.Node, message *Message.Message) (string, error) {
 	if err := app.RemoveFromRoom(message.GetOrigin()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}
