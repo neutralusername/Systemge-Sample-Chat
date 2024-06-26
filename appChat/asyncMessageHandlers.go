@@ -13,7 +13,7 @@ func (app *App) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
 	}
 }
 
-func (app *App) AddMessage(client *Node.Node, message *Message.Message) error {
+func (app *App) AddMessage(node *Node.Node, message *Message.Message) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	chatter := app.chatters[message.GetOrigin()]
@@ -26,6 +26,6 @@ func (app *App) AddMessage(client *Node.Node, message *Message.Message) error {
 	}
 	chatMessage := NewChatMessage(chatter.id, message.GetPayload())
 	room.AddMessage(chatMessage)
-	client.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
+	node.AsyncMessage(topics.PROPAGATE_MESSAGE, chatter.roomId, chatMessage.Marshal())
 	return nil
 }

@@ -15,7 +15,7 @@ func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 	}
 }
 
-func (app *App) Join(client *Node.Node, message *Message.Message) (string, error) {
+func (app *App) Join(node *Node.Node, message *Message.Message) (string, error) {
 	if err := app.AddChatter(message.GetOrigin()); err != nil {
 		return "", Error.New("Failed to create chatter", err)
 	}
@@ -25,7 +25,7 @@ func (app *App) Join(client *Node.Node, message *Message.Message) (string, error
 	return Utilities.StringsToJsonObjectArray(app.GetRoomMessages(message.GetPayload())), nil
 }
 
-func (app *App) Leave(client *Node.Node, message *Message.Message) (string, error) {
+func (app *App) Leave(node *Node.Node, message *Message.Message) (string, error) {
 	if err := app.RemoveFromRoom(message.GetOrigin()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}

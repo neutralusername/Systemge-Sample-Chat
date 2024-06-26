@@ -12,7 +12,7 @@ func (app *App) GetCustomCommandHandlers() map[string]Node.CustomCommandHandler 
 	}
 }
 
-func (app *App) GetChatters(client *Node.Node, args []string) error {
+func (app *App) GetChatters(node *Node.Node, args []string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	if len(args) != 1 {
@@ -28,7 +28,7 @@ func (app *App) GetChatters(client *Node.Node, args []string) error {
 	return nil
 }
 
-func (app *App) GetRooms(client *Node.Node, args []string) error {
+func (app *App) GetRooms(node *Node.Node, args []string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	for roomId := range app.rooms {

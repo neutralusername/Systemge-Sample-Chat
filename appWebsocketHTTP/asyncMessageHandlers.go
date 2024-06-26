@@ -12,7 +12,7 @@ func (app *AppWebsocketHTTP) GetAsyncMessageHandlers() map[string]Node.AsyncMess
 	}
 }
 
-func (app *AppWebsocketHTTP) PropagateMessage(client *Node.Node, message *Message.Message) error {
-	client.WebsocketGroupcast(message.GetOrigin(), message)
+func (app *AppWebsocketHTTP) PropagateMessage(node *Node.Node, message *Message.Message) error {
+	node.WebsocketGroupcast(message.GetOrigin(), message)
 	return nil
 }
