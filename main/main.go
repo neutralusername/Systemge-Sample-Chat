@@ -34,16 +34,16 @@ func main() {
 		panic(err)
 	}
 
-	clientChat := Module.NewClient(&Node.Config{
-		Name:                   "clientApp",
+	nodeChat := Module.NewNode(&Node.Config{
+		Name:                   "nodeApp",
 		ResolverAddress:        RESOLVER_ADDRESS,
 		ResolverNameIndication: RESOLVER_NAME_INDICATION,
 		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
 		LoggerPath:             ERROR_LOG_FILE_PATH,
 	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
-	clientWebsocket := Module.NewClient(&Node.Config{
-		Name:                   "clientWebsocketHTTP",
+	nodeWebsocket := Module.NewNode(&Node.Config{
+		Name:                   "nodeWebsocketHTTP",
 		ResolverAddress:        RESOLVER_ADDRESS,
 		ResolverNameIndication: RESOLVER_NAME_INDICATION,
 		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
@@ -53,10 +53,7 @@ func main() {
 		LoggerPath:             ERROR_LOG_FILE_PATH,
 	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
-		//order is important in this multi module because websocket app disconnects all clients when it stops and within onDisconnct() it communicates to the chat app that the client/chatter has disconnected.
-		//if the chat app is stopped before the websocket app, the websocket app will not be able to communicate to the chat app that the client/chatter has disconnected.
-		//which results in the chat app having chatters that will never be removed.
-		clientWebsocket,
-		clientChat,
+		nodeWebsocket,
+		nodeChat,
 	))
 }
