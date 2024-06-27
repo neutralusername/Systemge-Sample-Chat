@@ -2,6 +2,7 @@ package appChat
 
 import (
 	"Systemge/Node"
+	"Systemge/Utilities"
 	"sync"
 )
 
@@ -27,4 +28,13 @@ func (app *App) OnStart(node *Node.Node) error {
 func (app *App) OnStop(node *Node.Node) error {
 	//an alternative solution to the problem of async messages not being received by appChat during stoping using multi-modules would be to remove all remaining chatters and all rooms here
 	return nil
+}
+
+func (app *App) GetApplicationConfig() Node.ApplicationConfig {
+	return Node.ApplicationConfig{
+		ResolverAddress:            "127.0.0.1:60000",
+		ResolverNameIndication:     "127.0.0.1",
+		ResolverTLSCert:            Utilities.GetFileContent("MyCertificate.crt"),
+		HandleMessagesSequentially: false,
+	}
 }

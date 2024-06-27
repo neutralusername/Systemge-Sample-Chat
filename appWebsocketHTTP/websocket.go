@@ -45,3 +45,12 @@ func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClien
 		node.GetLogger().Log(Error.New("Failed to leave room", err).Error())
 	}
 }
+
+func (app *AppWebsocketHTTP) GetWebsocketComponentConfig() Node.WebsocketComponentConfig {
+	return Node.WebsocketComponentConfig{
+		Pattern:     "/ws",
+		Port:        ":8443",
+		TlsCertPath: "",
+		TlsKeyPath:  "",
+	}
+}

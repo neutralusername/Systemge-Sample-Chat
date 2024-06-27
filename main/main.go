@@ -3,16 +3,9 @@ package main
 import (
 	"Systemge/Module"
 	"Systemge/Node"
-	"Systemge/Utilities"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
 )
-
-const RESOLVER_ADDRESS = "127.0.0.1:60000"
-const RESOLVER_NAME_INDICATION = "127.0.0.1"
-const RESOLVER_TLS_CERT_PATH = "MyCertificate.crt"
-const WEBSOCKET_PORT = ":8443"
-const HTTP_PORT = ":8080"
 
 const ERROR_LOG_FILE_PATH = "error.log"
 
@@ -34,23 +27,14 @@ func main() {
 		panic(err)
 	}
 
-	nodeChat := Module.NewNode(&Node.Config{
-		Name:                   "nodeApp",
-		ResolverAddress:        RESOLVER_ADDRESS,
-		ResolverNameIndication: RESOLVER_NAME_INDICATION,
-		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
-		LoggerPath:             ERROR_LOG_FILE_PATH,
+	nodeChat := Module.NewNode(&Node.NodeConfig{
+		Name:       "nodeApp",
+		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
-	nodeWebsocket := Module.NewNode(&Node.Config{
-		Name:                   "nodeWebsocketHTTP",
-		ResolverAddress:        RESOLVER_ADDRESS,
-		ResolverNameIndication: RESOLVER_NAME_INDICATION,
-		ResolverTLSCert:        Utilities.GetFileContent(RESOLVER_TLS_CERT_PATH),
-		WebsocketPattern:       "/ws",
-		WebsocketPort:          WEBSOCKET_PORT,
-		HTTPPort:               HTTP_PORT,
-		LoggerPath:             ERROR_LOG_FILE_PATH,
+	nodeWebsocket := Module.NewNode(&Node.NodeConfig{
+		Name:       "nodeWebsocketHTTP",
+		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		nodeWebsocket,
