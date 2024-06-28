@@ -27,12 +27,12 @@ func main() {
 		panic(err)
 	}
 
-	nodeChat := Module.NewNode(&Config.Node{
+	nodeChat := Module.NewNode(Config.Node{
 		Name:       "nodeApp",
 		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
-	nodeWebsocket := Module.NewNode(&Config.Node{
+	nodeWebsocket := Module.NewNode(Config.Node{
 		Name:       "nodeWebsocketHTTP",
 		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
