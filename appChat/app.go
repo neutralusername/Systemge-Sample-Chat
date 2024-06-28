@@ -13,7 +13,7 @@ type App struct {
 	mutex    sync.Mutex
 }
 
-func New() Node.Application {
+func New() *App {
 	app := &App{
 		rooms:    map[string]*Room{},
 		chatters: map[string]*Chatter{},
