@@ -1,8 +1,8 @@
 package main
 
 import (
+	"Systemge/Config"
 	"Systemge/Module"
-	"Systemge/Node"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
 )
@@ -27,12 +27,12 @@ func main() {
 		panic(err)
 	}
 
-	nodeChat := Module.NewNode(&Node.NodeConfig{
+	nodeChat := Module.NewNode(&Config.Node{
 		Name:       "nodeApp",
 		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
-	nodeWebsocket := Module.NewNode(&Node.NodeConfig{
+	nodeWebsocket := Module.NewNode(&Config.Node{
 		Name:       "nodeWebsocketHTTP",
 		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
