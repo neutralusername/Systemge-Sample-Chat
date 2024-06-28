@@ -25,11 +25,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = Broker.New(Module.ParseBrokerConfigFromFile("brokerWebsocket.systemge")).Start()
+	err = Broker.New(Module.ParseBrokerConfigFromFile("brokerWebsocketHTTP.systemge")).Start()
 	if err != nil {
 		panic(err)
 	}
-
 	nodeChat := Node.New(Config.Node{
 		Name:       "nodeApp",
 		LoggerPath: ERROR_LOG_FILE_PATH,
