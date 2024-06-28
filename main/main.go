@@ -1,8 +1,11 @@
 package main
 
 import (
+	"Systemge/Broker"
 	"Systemge/Config"
 	"Systemge/Module"
+	"Systemge/Node"
+	"Systemge/Resolver"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
 )
@@ -14,25 +17,25 @@ func main() {
 	//and if they are stopped first on stop, which is inherent to multi-module behaviour, the other modules will not be able to communicate with them during their stop/disconnect routine.
 	//this demonstrates why multi modules are not always the best solution.
 	//the alternative is to start them either manually, like here in the main function, or to start them in separate terminal windows as separate processes/programs.
-	err := Module.NewResolverFromConfig("resolver.systemge", ERROR_LOG_FILE_PATH).Start()
+	err := Resolver.New(Module.ParseResolverConfigFromFile("resolver.systemge")).Start()
 	if err != nil {
 		panic(err)
 	}
-	err = Module.NewBrokerFromConfig("brokerChat.systemge", ERROR_LOG_FILE_PATH).Start()
+	err = Broker.New(Module.ParseBrokerConfigFromFile("brokerChat.systemge")).Start()
 	if err != nil {
 		panic(err)
 	}
-	err = Module.NewBrokerFromConfig("brokerWebsocket.systemge", ERROR_LOG_FILE_PATH).Start()
+	err = Broker.New(Module.ParseBrokerConfigFromFile("brokerWebsocket.systemge")).Start()
 	if err != nil {
 		panic(err)
 	}
 
-	nodeChat := Module.NewNode(Config.Node{
+	nodeChat := Node.New(Config.Node{
 		Name:       "nodeApp",
 		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
-	nodeWebsocket := Module.NewNode(Config.Node{
+	nodeWebsocket := Node.New(Config.Node{
 		Name:       "nodeWebsocketHTTP",
 		LoggerPath: ERROR_LOG_FILE_PATH,
 	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
