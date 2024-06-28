@@ -29,17 +29,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	nodeChat := Node.New(Config.Node{
-		Name:       "nodeApp",
-		LoggerPath: ERROR_LOG_FILE_PATH,
-	}, appChat.New(), nil, nil)
 	appWebsocketHTTP := appWebsocketHTTP.New()
-	nodeWebsocket := Node.New(Config.Node{
-		Name:       "nodeWebsocketHTTP",
-		LoggerPath: ERROR_LOG_FILE_PATH,
-	}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP)
 	Module.StartCommandLineInterface(Module.NewMultiModule(
-		nodeWebsocket,
-		nodeChat,
+		Node.New(Config.Node{
+			Name:       "nodeWebsocketHTTP",
+			LoggerPath: ERROR_LOG_FILE_PATH,
+		}, appWebsocketHTTP, appWebsocketHTTP, appWebsocketHTTP),
+		Node.New(Config.Node{
+			Name:       "nodeApp",
+			LoggerPath: ERROR_LOG_FILE_PATH,
+		}, appChat.New(), nil, nil),
 	))
 }
