@@ -5,7 +5,9 @@ import (
 	"Systemge/Config"
 	"Systemge/Module"
 	"Systemge/Node"
+	"Systemge/Resolution"
 	"Systemge/Resolver"
+	"Systemge/Utilities"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
 )
@@ -31,12 +33,14 @@ func main() {
 	}
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		Node.New(Config.Node{
-			Name:       "nodeWebsocketHTTP",
-			LoggerPath: ERROR_LOG_FILE_PATH,
+			Name:               "nodeWebsocketHTTP",
+			LoggerPath:         ERROR_LOG_FILE_PATH,
+			ResolverResolution: Resolution.New("resolver", "127.0.0.1:60000", "127.0.0.1", Utilities.GetFileContent("MyCertificate.crt")),
 		}, appWebsocketHTTP.New()),
 		Node.New(Config.Node{
-			Name:       "nodeApp",
-			LoggerPath: ERROR_LOG_FILE_PATH,
+			Name:               "nodeApp",
+			LoggerPath:         ERROR_LOG_FILE_PATH,
+			ResolverResolution: Resolution.New("resolver", "127.0.0.1:60000", "127.0.0.1", Utilities.GetFileContent("MyCertificate.crt")),
 		}, appChat.New()),
 	))
 }
