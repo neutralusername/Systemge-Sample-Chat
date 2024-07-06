@@ -1,8 +1,0 @@
-# broker
-_logs ./error.log
-_broker :60005 ./MyCertificate.crt ./MyKey.key
-_config :60006 ./MyCertificate.crt ./MyKey.key
-
-joinRoom sync
-leave sync
-addMessage async

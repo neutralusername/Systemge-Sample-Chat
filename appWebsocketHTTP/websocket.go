@@ -5,6 +5,7 @@ import (
 	"Systemge/Error"
 	"Systemge/Message"
 	"Systemge/Node"
+	"Systemge/TcpServer"
 	"SystemgeSampleChat/topics"
 )
 
@@ -27,12 +28,15 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 	if err != nil {
 		websocketClient.Disconnect()
 		node.GetLogger().Log(Error.New("Failed to add to group", err).Error())
+		return
 	}
 	response, err := node.SyncMessage(topics.JOIN, websocketClient.GetId(), "lobby")
 	if err != nil {
 		websocketClient.Disconnect()
 		node.GetLogger().Log(Error.New("Failed to join room", err).Error())
+		return
 	}
+	println("connected")
 	websocketClient.Send([]byte(response.Serialize()))
 }
 
@@ -49,9 +53,10 @@ func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClien
 
 func (app *AppWebsocketHTTP) GetWebsocketComponentConfig() Config.Websocket {
 	return Config.Websocket{
-		Pattern:     "/ws",
-		Port:        ":8443",
-		TlsCertPath: "",
-		TlsKeyPath:  "",
+		Pattern:                          "/ws",
+		Server:                           TcpServer.New(8443, "", ""),
+		HandleClientMessagesSequentially: false,
+		ClientMessageCooldownMs:          0,
+		ClientWatchdogTimeoutMs:          20000,
 	}
 }
