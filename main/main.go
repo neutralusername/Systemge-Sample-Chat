@@ -18,10 +18,6 @@ import (
 const ERROR_LOG_FILE_PATH = "error.log"
 
 func main() {
-	//resolver and brokers are placed outside, because on startup they need to be started first.
-	//and if they are stopped first on stop, which is inherent to multi-module behaviour, the other modules will not be able to communicate with them during their stop/disconnect routine.
-	//this demonstrates why multi modules are not always the best solution.
-	//the alternative is to start them either manually, like here in the main function, or to start them in separate terminal windows as separate processes/programs with their own command line interfaces.
 	err := Resolver.New(Config.Resolver{
 		Name:       config.RESOLVER_NAME,
 		LoggerPath: ERROR_LOG_FILE_PATH,
