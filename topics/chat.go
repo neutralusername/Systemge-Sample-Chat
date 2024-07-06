@@ -1,5 +1,5 @@
 package topics
 
-const JOIN = "joinRoom"
+const JOIN = "join"
 const LEAVE = "leave"
 const ADD_MESSAGE = "addMessage"
