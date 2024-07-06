@@ -38,7 +38,7 @@ func main() {
 		Name:                   config.BROKER_CHAT_NAME,
 		LoggerPath:             ERROR_LOG_FILE_PATH,
 		DeliverImmediately:     true,
-		ConnectionTimeoutMs:    3000,
+		NodeTimeoutMs:          3000,
 		ResolverConfigEndpoint: TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_CONFIG_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
 		SyncRequestTimeoutMs:   5000,
 
@@ -57,7 +57,7 @@ func main() {
 		Name:                   config.BROKER_WEBSOCKET_HTTP_NAME,
 		LoggerPath:             ERROR_LOG_FILE_PATH,
 		DeliverImmediately:     true,
-		ConnectionTimeoutMs:    3000,
+		NodeTimeoutMs:          3000,
 		ResolverConfigEndpoint: TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_CONFIG_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
 		SyncRequestTimeoutMs:   5000,
 
@@ -74,18 +74,18 @@ func main() {
 	}
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		Node.New(Config.Node{
-			Name:                  config.NODE_WEBSOCKET_HTTP_NAME,
-			LoggerPath:            ERROR_LOG_FILE_PATH,
-			ResolverEndpoint:      TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
-			SyncResponseTimeoutMs: 1000,
-			HeartbeatIntervalMs:   100,
+			Name:                      config.NODE_WEBSOCKET_HTTP_NAME,
+			LoggerPath:                ERROR_LOG_FILE_PATH,
+			ResolverEndpoint:          TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
+			SyncResponseTimeoutMs:     1000,
+			BrokerHeartbeatIntervalMs: 100,
 		}, appWebsocketHTTP.New()),
 		Node.New(Config.Node{
-			Name:                  config.NODE_CHAT_NAME,
-			LoggerPath:            ERROR_LOG_FILE_PATH,
-			ResolverEndpoint:      TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
-			SyncResponseTimeoutMs: 1000,
-			HeartbeatIntervalMs:   100,
+			Name:                      config.NODE_CHAT_NAME,
+			LoggerPath:                ERROR_LOG_FILE_PATH,
+			ResolverEndpoint:          TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
+			SyncResponseTimeoutMs:     1000,
+			BrokerHeartbeatIntervalMs: 100,
 		}, appChat.New()),
 	))
 }
