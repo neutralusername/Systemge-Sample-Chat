@@ -5,7 +5,7 @@ const CERT_PATH = "./MyCertificate.crt"
 const RESOLVER_PORT = 60000
 
 const SERVER_NAME_INDICATION = "example.com"
-const SERVER_ADDRESS = "127.0.0.1"
+const SERVER_IP = "127.0.0.1"
 
 const NODE_WEBSOCKET_HTTP_NAME = "nodeWebsocketHTTP"
 const NODE_CHAT_NAME = "nodeChat"
