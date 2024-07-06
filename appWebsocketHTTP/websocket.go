@@ -36,7 +36,6 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 		node.GetLogger().Log(Error.New("Failed to join room", err).Error())
 		return
 	}
-	println("connected")
 	websocketClient.Send([]byte(response.Serialize()))
 }
 
