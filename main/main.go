@@ -74,18 +74,18 @@ func main() {
 	}
 	Module.StartCommandLineInterface(Module.NewMultiModule(
 		Node.New(Config.Node{
-			Name:                 "nodeWebsocketHTTP",
-			LoggerPath:           ERROR_LOG_FILE_PATH,
-			ResolverEndpoint:     TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
-			SyncMessageTimeoutMs: 1000,
-			HeartbeatIntervalMs:  100,
+			Name:                  "nodeWebsocketHTTP",
+			LoggerPath:            ERROR_LOG_FILE_PATH,
+			ResolverEndpoint:      TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
+			SyncResponseTimeoutMs: 1000,
+			HeartbeatIntervalMs:   100,
 		}, appWebsocketHTTP.New()),
 		Node.New(Config.Node{
-			Name:                 "nodeApp",
-			LoggerPath:           ERROR_LOG_FILE_PATH,
-			ResolverEndpoint:     TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
-			SyncMessageTimeoutMs: 1000,
-			HeartbeatIntervalMs:  100,
+			Name:                  "nodeApp",
+			LoggerPath:            ERROR_LOG_FILE_PATH,
+			ResolverEndpoint:      TcpEndpoint.New(config.SERVER_ADDRESS+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
+			SyncResponseTimeoutMs: 1000,
+			HeartbeatIntervalMs:   100,
 		}, appChat.New()),
 	))
 }
