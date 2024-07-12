@@ -6,11 +6,8 @@ import (
 	"Systemge/Module"
 	"Systemge/Node"
 	"Systemge/Resolver"
-	"Systemge/TcpEndpoint"
-	"Systemge/Utilities"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
-	"SystemgeSampleChat/config"
 )
 
 const ERROR_LOG_FILE_PATH = "error.log"
@@ -29,23 +26,7 @@ func main() {
 		panic(err)
 	}
 	Module.StartCommandLineInterface(Module.NewMultiModule(
-		Node.New(Config.Node{
-			Name:                      config.NODE_WEBSOCKET_HTTP_NAME,
-			Logger:                    Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
-			ResolverEndpoint:          TcpEndpoint.New(config.SERVER_IP+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
-			SyncResponseTimeoutMs:     1000,
-			TopicResolutionLifetimeMs: 10000,
-			BrokerSubscribeDelayMs:    1000,
-			TcpTimeoutMs:              5000,
-		}, appWebsocketHTTP.New()),
-		Node.New(Config.Node{
-			Name:                      config.NODE_CHAT_NAME,
-			Logger:                    Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
-			ResolverEndpoint:          TcpEndpoint.New(config.SERVER_IP+":"+Utilities.IntToString(config.RESOLVER_PORT), config.SERVER_NAME_INDICATION, Utilities.GetFileContent(config.CERT_PATH)),
-			SyncResponseTimeoutMs:     1000,
-			TopicResolutionLifetimeMs: 10000,
-			BrokerSubscribeDelayMs:    1000,
-			TcpTimeoutMs:              5000,
-		}, appChat.New()),
+		Node.New(Config.ParseNodeConfigFromFile("nodeChat.systemge"), appWebsocketHTTP.New()),
+		Node.New(Config.ParseNodeConfigFromFile("nodeWebsocketHTTP.systemge"), appChat.New()),
 	))
 }
