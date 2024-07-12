@@ -36,6 +36,7 @@ func main() {
 			SyncResponseTimeoutMs:     1000,
 			TopicResolutionLifetimeMs: 10000,
 			BrokerSubscribeDelayMs:    1000,
+			TcpTimeoutMs:              5000,
 		}, appWebsocketHTTP.New()),
 		Node.New(Config.Node{
 			Name:                      config.NODE_CHAT_NAME,
@@ -44,6 +45,7 @@ func main() {
 			SyncResponseTimeoutMs:     1000,
 			TopicResolutionLifetimeMs: 10000,
 			BrokerSubscribeDelayMs:    1000,
+			TcpTimeoutMs:              5000,
 		}, appChat.New()),
 	))
 }
