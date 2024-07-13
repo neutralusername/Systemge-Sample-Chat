@@ -26,7 +26,7 @@ func main() {
 		panic(err)
 	}
 	Module.StartCommandLineInterface(Module.NewMultiModule(
-		Node.New(Config.ParseNodeConfigFromFile("nodeChat.systemge"), appWebsocketHTTP.New()),
-		Node.New(Config.ParseNodeConfigFromFile("nodeWebsocketHTTP.systemge"), appChat.New()),
+		Node.New(Config.ParseNodeConfigFromFile("nodeWebsocketHTTP.systemge"), appWebsocketHTTP.New()),
+		Node.New(Config.ParseNodeConfigFromFile("nodeChat.systemge"), appChat.New()),
 	))
 }

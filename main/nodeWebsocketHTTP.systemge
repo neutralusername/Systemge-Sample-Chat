@@ -1,4 +1,5 @@
 # node
+_info ./error.log
 _error ./error.log
 _warning ./error.log
 _debug ./error.log
