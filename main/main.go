@@ -17,7 +17,6 @@ import (
 const ERROR_LOG_FILE_PATH = "error.log"
 
 func main() {
-
 	Module.StartCommandLineInterface(Module.NewMultiModule(true,
 		Node.New(Config.Node{
 			Name:   "nodeResolver",
