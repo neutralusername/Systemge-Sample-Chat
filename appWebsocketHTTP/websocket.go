@@ -9,6 +9,17 @@ import (
 	"SystemgeSampleChat/topics"
 )
 
+func (app *AppWebsocketHTTP) GetWebsocketComponentConfig() Config.Websocket {
+	return Config.Websocket{
+		Pattern:                          "/ws",
+		Server:                           TcpServer.New(8443, "", ""),
+		HandleClientMessagesSequentially: false,
+
+		ClientMessageCooldownMs: 0,
+		ClientWatchdogTimeoutMs: 20000,
+	}
+}
+
 func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.WebsocketMessageHandler {
 	return map[string]Node.WebsocketMessageHandler{
 		topics.ADD_MESSAGE: app.AddMessage,
@@ -47,15 +58,5 @@ func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClien
 	_, err = node.SyncMessage(topics.LEAVE, websocketClient.GetId(), "")
 	if err != nil {
 		node.GetLogger().Error(Error.New("Failed to leave room", err).Error())
-	}
-}
-
-func (app *AppWebsocketHTTP) GetWebsocketComponentConfig() Config.Websocket {
-	return Config.Websocket{
-		Pattern:                          "/ws",
-		Server:                           TcpServer.New(8443, "", ""),
-		HandleClientMessagesSequentially: false,
-		ClientMessageCooldownMs:          0,
-		ClientWatchdogTimeoutMs:          20000,
 	}
 }
