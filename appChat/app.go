@@ -1,7 +1,7 @@
 package appChat
 
 import (
-	"Systemge/Config"
+	"Systemge/Error"
 	"Systemge/Node"
 	"sync"
 )
@@ -21,17 +21,34 @@ func New() *App {
 	return app
 }
 
-func (app *App) OnStart(node *Node.Node) error {
-	return nil
-}
-
-func (app *App) OnStop(node *Node.Node) error {
-	//an alternative solution to the problem of async messages not being received by appChat during stoping using multi-modules would be to remove all remaining chatters and all rooms here
-	return nil
-}
-
-func (app *App) GetApplicationConfig() Config.Application {
-	return Config.Application{
-		HandleMessagesSequentially: false,
+func (app *App) GetCustomCommandHandlers() map[string]Node.CustomCommandHandler {
+	return map[string]Node.CustomCommandHandler{
+		"getChatters": app.GetChatters,
+		"getRooms":    app.GetRooms,
 	}
+}
+
+func (app *App) GetChatters(node *Node.Node, args []string) error {
+	app.mutex.Lock()
+	defer app.mutex.Unlock()
+	if len(args) != 1 {
+		return Error.New("Invalid arguments", nil)
+	}
+	room := app.rooms[args[0]]
+	if room == nil {
+		return Error.New("Room not found", nil)
+	}
+	for _, chatter := range room.chatters {
+		println(chatter.id)
+	}
+	return nil
+}
+
+func (app *App) GetRooms(node *Node.Node, args []string) error {
+	app.mutex.Lock()
+	defer app.mutex.Unlock()
+	for roomId := range app.rooms {
+		println(roomId)
+	}
+	return nil
 }
