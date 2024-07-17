@@ -9,7 +9,7 @@ import (
 	"SystemgeSampleChat/topics"
 )
 
-func (app *App) GetSystemgeConfig() Config.Systemge {
+func (app *App) GetSystemgeComponentConfig() Config.Systemge {
 	return Config.Systemge{
 		HandleMessagesSequentially: false,
 	}
