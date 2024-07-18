@@ -3,7 +3,6 @@ package main
 import (
 	"Systemge/Broker"
 	"Systemge/Config"
-	"Systemge/Module"
 	"Systemge/Node"
 	"Systemge/Resolver"
 	"Systemge/TcpEndpoint"
@@ -17,7 +16,7 @@ import (
 const ERROR_LOG_FILE_PATH = "error.log"
 
 func main() {
-	Module.StartCommandLineInterface(Module.NewMultiModule(true,
+	Node.StartCommandLineInterface(true,
 		Node.New(Config.Node{
 			Name:   "nodeResolver",
 			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
@@ -66,5 +65,5 @@ func main() {
 			Name:   "nodeWebsocketHTTP",
 			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
 		}, appWebsocketHTTP.New()),
-	))
+	)
 }
