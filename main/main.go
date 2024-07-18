@@ -20,7 +20,7 @@ func main() {
 	Module.StartCommandLineInterface(Module.NewMultiModule(true,
 		Node.New(Config.Node{
 			Name:   "nodeResolver",
-			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, nil),
+			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
 		}, Resolver.New(Config.Resolver{
 			Server:       TcpServer.New(60000, "MyCertificate.crt", "MyKey.key"),
 			ConfigServer: TcpServer.New(60001, "MyCertificate.crt", "MyKey.key"),
@@ -29,7 +29,7 @@ func main() {
 		})),
 		Node.New(Config.Node{
 			Name:   "nodeBrokerChat",
-			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, nil),
+			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
 		}, Broker.New(Config.Broker{
 			Server:       TcpServer.New(60002, "MyCertificate.crt", "MyKey.key"),
 			Endpoint:     TcpEndpoint.New("127.0.0.1:60002", "example.com", Utilities.GetFileContent("MyCertificate.crt")),
@@ -45,7 +45,7 @@ func main() {
 		})),
 		Node.New(Config.Node{
 			Name:   "nodeBrokerWebsocketHTTP",
-			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, nil),
+			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
 		}, Broker.New(Config.Broker{
 			Server:       TcpServer.New(60004, "MyCertificate.crt", "MyKey.key"),
 			Endpoint:     TcpEndpoint.New("127.0.0.1:60004", "example.com", Utilities.GetFileContent("MyCertificate.crt")),
@@ -60,11 +60,11 @@ func main() {
 		})),
 		Node.New(Config.Node{
 			Name:   "nodeChat",
-			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, nil),
+			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
 		}, appChat.New()),
 		Node.New(Config.Node{
 			Name:   "nodeWebsocketHTTP",
-			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, nil),
+			Logger: Utilities.NewLogger(ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH, ERROR_LOG_FILE_PATH),
 		}, appWebsocketHTTP.New()),
 	))
 }
