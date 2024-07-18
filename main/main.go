@@ -6,7 +6,6 @@ import (
 	"Systemge/Helpers"
 	"Systemge/Node"
 	"Systemge/Resolver"
-	"Systemge/Tcp"
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHTTP"
 	"SystemgeSampleChat/topics"
@@ -26,8 +25,16 @@ func main() {
 				QueueBuffer: 10000,
 			},
 		}, Resolver.New(Config.Resolver{
-			Server:       Tcp.NewServer(60000, "MyCertificate.crt", "MyKey.key"),
-			ConfigServer: Tcp.NewServer(60001, "MyCertificate.crt", "MyKey.key"),
+			Server: Config.TcpServer{
+				Port:        60000,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
+			ConfigServer: Config.TcpServer{
+				Port:        60001,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
 
 			TcpTimeoutMs: 5000,
 		})),
@@ -41,14 +48,30 @@ func main() {
 				QueueBuffer: 10000,
 			},
 		}, Broker.New(Config.Broker{
-			Server:       Tcp.NewServer(60002, "MyCertificate.crt", "MyKey.key"),
-			Endpoint:     Tcp.NewEndpoint("127.0.0.1:60002", "example.com", Helpers.GetFileContent("MyCertificate.crt")),
-			ConfigServer: Tcp.NewServer(60003, "MyCertificate.crt", "MyKey.key"),
+			Server: Config.TcpServer{
+				Port:        60002,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
+			Endpoint: Config.TcpEndpoint{
+				Address: "127.0.0.1:60002",
+				Domain:  "example.com",
+				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
+			},
+			ConfigServer: Config.TcpServer{
+				Port:        60003,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
 
 			SyncTopics:  []string{topics.LEAVE, topics.JOIN},
 			AsyncTopics: []string{topics.ADD_MESSAGE},
 
-			ResolverConfigEndpoint: Tcp.NewEndpoint("127.0.0.1:60001", "example.com", Helpers.GetFileContent("MyCertificate.crt")),
+			ResolverConfigEndpoint: Config.TcpEndpoint{
+				Address: "127.0.0.1:60001",
+				Domain:  "example.com",
+				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
+			},
 
 			SyncResponseTimeoutMs: 10000,
 			TcpTimeoutMs:          5000,
@@ -63,13 +86,29 @@ func main() {
 				QueueBuffer: 10000,
 			},
 		}, Broker.New(Config.Broker{
-			Server:       Tcp.NewServer(60004, "MyCertificate.crt", "MyKey.key"),
-			Endpoint:     Tcp.NewEndpoint("127.0.0.1:60004", "example.com", Helpers.GetFileContent("MyCertificate.crt")),
-			ConfigServer: Tcp.NewServer(60005, "MyCertificate.crt", "MyKey.key"),
+			Server: Config.TcpServer{
+				Port:        60004,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
+			Endpoint: Config.TcpEndpoint{
+				Address: "127.0.0.1:60004",
+				Domain:  "example.com",
+				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
+			},
+			ConfigServer: Config.TcpServer{
+				Port:        60005,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
 
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
 
-			ResolverConfigEndpoint: Tcp.NewEndpoint("127.0.0.1:60001", "example.com", Helpers.GetFileContent("MyCertificate.crt")),
+			ResolverConfigEndpoint: Config.TcpEndpoint{
+				Address: "127.0.0.1:60001",
+				Domain:  "example.com",
+				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
+			},
 
 			SyncResponseTimeoutMs: 10000,
 			TcpTimeoutMs:          5000,
