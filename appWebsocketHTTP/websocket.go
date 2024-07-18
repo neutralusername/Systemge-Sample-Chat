@@ -5,14 +5,14 @@ import (
 	"Systemge/Error"
 	"Systemge/Message"
 	"Systemge/Node"
-	"Systemge/TcpServer"
+	"Systemge/Tcp"
 	"SystemgeSampleChat/topics"
 )
 
 func (app *AppWebsocketHTTP) GetWebsocketComponentConfig() Config.Websocket {
 	return Config.Websocket{
 		Pattern:                          "/ws",
-		Server:                           TcpServer.New(8443, "", ""),
+		Server:                           Tcp.NewServer(8443, "", ""),
 		HandleClientMessagesSequentially: false,
 
 		ClientMessageCooldownMs: 0,

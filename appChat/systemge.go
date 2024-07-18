@@ -3,10 +3,10 @@ package appChat
 import (
 	"Systemge/Config"
 	"Systemge/Error"
+	"Systemge/Helpers"
 	"Systemge/Message"
 	"Systemge/Node"
-	"Systemge/TcpEndpoint"
-	"Systemge/Utilities"
+	"Systemge/Tcp"
 	"SystemgeSampleChat/topics"
 )
 
@@ -19,7 +19,7 @@ func (app *App) GetSystemgeComponentConfig() Config.Systemge {
 		SyncResponseTimeoutMs:     10000,
 		TcpTimeoutMs:              5000,
 
-		ResolverEndpoint: TcpEndpoint.New("127.0.0.1:60000", "example.com", Utilities.GetFileContent("MyCertificate.crt")),
+		ResolverEndpoint: Tcp.NewEndpoint("127.0.0.1:60000", "example.com", Helpers.GetFileContent("MyCertificate.crt")),
 	}
 }
 
@@ -60,7 +60,7 @@ func (app *App) Join(node *Node.Node, message *Message.Message) (string, error) 
 	if err := app.AddToRoom(message.GetOrigin(), message.GetPayload()); err != nil {
 		return "", Error.New("Failed to join room", err)
 	}
-	return Utilities.StringsToJsonObjectArray(app.GetRoomMessages(message.GetPayload())), nil
+	return Helpers.StringsToJsonObjectArray(app.GetRoomMessages(message.GetPayload())), nil
 }
 
 func (app *App) Leave(node *Node.Node, message *Message.Message) (string, error) {
