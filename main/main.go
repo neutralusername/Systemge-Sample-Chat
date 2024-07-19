@@ -20,22 +20,22 @@ func main() {
 			InfoLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Info \"Resolver\"] ",
+				Prefix:      "[Info \"nodeResolver\"] ",
 			},
 			WarningLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Warning \"Resolver\"] ",
+				Prefix:      "[Warning \"nodeResolver\"] ",
 			},
 			ErrorLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Error \"Resolver\"] ",
+				Prefix:      "[Error \"nodeResolver\"] ",
 			},
 			DebugLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Debug \"Resolver\"] ",
+				Prefix:      "[Debug \"nodeResolver\"] ",
 			},
 		}, Resolver.New(&Config.Resolver{
 			Server: &Config.TcpServer{
@@ -56,22 +56,22 @@ func main() {
 			InfoLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Info \"Resolver\"] ",
+				Prefix:      "[Info \"nodeBrokerChat\"] ",
 			},
 			WarningLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Warning \"Resolver\"] ",
+				Prefix:      "[Warning \"nodeBrokerChat\"] ",
 			},
 			ErrorLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Error \"Resolver\"] ",
+				Prefix:      "[Error \"nodeBrokerChat\"] ",
 			},
 			DebugLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Debug \"Resolver\"] ",
+				Prefix:      "[Debug \"nodeBrokerChat\"] ",
 			},
 		}, Broker.New(&Config.Broker{
 			Server: &Config.TcpServer{
@@ -107,22 +107,22 @@ func main() {
 			InfoLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Info \"Resolver\"] ",
+				Prefix:      "[Info \"nodeBrokerWebsocketHTTP\"] ",
 			},
 			WarningLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Warning \"Resolver\"] ",
+				Prefix:      "[Warning \"nodeBrokerWebsocketHTTP\"] ",
 			},
 			ErrorLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Error \"Resolver\"] ",
+				Prefix:      "[Error \"nodeBrokerWebsocketHTTP\"] ",
 			},
 			DebugLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Debug \"Resolver\"] ",
+				Prefix:      "[Debug \"nodeBrokerWebsocketHTTP\"] ",
 			},
 		}, Broker.New(&Config.Broker{
 			Server: &Config.TcpServer{
@@ -157,22 +157,22 @@ func main() {
 			InfoLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Info \"Resolver\"] ",
+				Prefix:      "[Info \"nodeChat\"] ",
 			},
 			WarningLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Warning \"Resolver\"] ",
+				Prefix:      "[Warning \"nodeChat\"] ",
 			},
 			ErrorLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Error \"Resolver\"] ",
+				Prefix:      "[Error \"nodeChat\"] ",
 			},
 			DebugLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Debug \"Resolver\"] ",
+				Prefix:      "[Debug \"nodeChat\"] ",
 			},
 		}, appChat.New()),
 		Node.New(&Config.Node{
@@ -180,22 +180,22 @@ func main() {
 			InfoLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Info \"Resolver\"] ",
+				Prefix:      "[Info \"nodeWebsocketHTTP\"] ",
 			},
 			WarningLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Warning \"Resolver\"] ",
+				Prefix:      "[Warning \"nodeWebsocketHTTP\"] ",
 			},
 			ErrorLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Error \"Resolver\"] ",
+				Prefix:      "[Error \"nodeWebsocketHTTP\"] ",
 			},
 			DebugLogger: &Config.Logger{
 				Path:        LOGGER_PATH,
 				QueueBuffer: 10000,
-				Prefix:      "[Debug \"Resolver\"] ",
+				Prefix:      "[Debug \"nodeWebsocketHTTP\"] ",
 			},
 		}, appWebsocketHTTP.New()),
 	)
