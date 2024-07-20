@@ -22,22 +22,22 @@ func main() {
 		ErrorLogger: &Config.Logger{
 			Path:        LOGGER_PATH,
 			QueueBuffer: 10000,
-			Prefix:      "[Error \"Dashboard\"] ",
+			Prefix:      "[Error \"dashboard\"] ",
 		},
 		WarningLogger: &Config.Logger{
 			Path:        LOGGER_PATH,
 			QueueBuffer: 10000,
-			Prefix:      "[Warning \"Dashboard\"] ",
+			Prefix:      "[Warning \"dashboard\"] ",
 		},
 		InfoLogger: &Config.Logger{
 			Path:        LOGGER_PATH,
 			QueueBuffer: 10000,
-			Prefix:      "[Info \"Dashboard\"] ",
+			Prefix:      "[Info \"dashboard\"] ",
 		},
 		DebugLogger: &Config.Logger{
 			Path:        LOGGER_PATH,
 			QueueBuffer: 10000,
-			Prefix:      "[Debug \"Dashboard\"] ",
+			Prefix:      "[Debug \"dashboard\"] ",
 		},
 	}, Dashboard.New(&Config.Dashboard{
 		Server: &Config.TcpServer{
