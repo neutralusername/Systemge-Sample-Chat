@@ -118,16 +118,13 @@ func main() {
 				TlsCertPath: "MyCertificate.crt",
 				TlsKeyPath:  "MyKey.key",
 			},
-
 			SyncTopics:  []string{topics.LEAVE, topics.JOIN},
 			AsyncTopics: []string{topics.ADD_MESSAGE},
-
 			ResolverConfigEndpoint: &Config.TcpEndpoint{
 				Address: "127.0.0.1:60001",
 				Domain:  "example.com",
 				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 			},
-
 			SyncResponseTimeoutMs: 10000,
 			TcpTimeoutMs:          5000,
 		})),
@@ -170,15 +167,12 @@ func main() {
 				TlsCertPath: "MyCertificate.crt",
 				TlsKeyPath:  "MyKey.key",
 			},
-
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
-
 			ResolverConfigEndpoint: &Config.TcpEndpoint{
 				Address: "127.0.0.1:60001",
 				Domain:  "example.com",
 				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 			},
-
 			SyncResponseTimeoutMs: 10000,
 			TcpTimeoutMs:          5000,
 		})),
