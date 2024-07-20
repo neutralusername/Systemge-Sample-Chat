@@ -16,7 +16,7 @@ import (
 const LOGGER_PATH = "logs.log"
 
 func main() {
-	Dashboard.StartDashboard(&Config.Node{
+	Node.New(&Config.Node{
 		Name:           "dashboard",
 		RandomizerSeed: Tools.GetSystemTime(),
 		ErrorLogger: &Config.Logger{
@@ -39,45 +39,46 @@ func main() {
 			QueueBuffer: 10000,
 			Prefix:      "[Debug \"Dashboard\"] ",
 		},
-	}, &Config.Dashboard{
+	}, Dashboard.New(&Config.Dashboard{
 		HttpPort:               8081,
 		StatusUpdateIntervalMs: 1000,
-	}, Node.New(&Config.Node{
-		Name:           "nodeResolver",
-		RandomizerSeed: Tools.GetSystemTime(),
-		InfoLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Info \"nodeResolver\"] ",
-		},
-		WarningLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Warning \"nodeResolver\"] ",
-		},
-		ErrorLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Error \"nodeResolver\"] ",
-		},
-		DebugLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Debug \"nodeResolver\"] ",
-		},
-	}, Resolver.New(&Config.Resolver{
-		Server: &Config.TcpServer{
-			Port:        60000,
-			TlsCertPath: "MyCertificate.crt",
-			TlsKeyPath:  "MyKey.key",
-		},
-		ConfigServer: &Config.TcpServer{
-			Port:        60001,
-			TlsCertPath: "MyCertificate.crt",
-			TlsKeyPath:  "MyKey.key",
-		},
-		TcpTimeoutMs: 5000,
-	})),
+	},
+		Node.New(&Config.Node{
+			Name:           "nodeResolver",
+			RandomizerSeed: Tools.GetSystemTime(),
+			InfoLogger: &Config.Logger{
+				Path:        LOGGER_PATH,
+				QueueBuffer: 10000,
+				Prefix:      "[Info \"nodeResolver\"] ",
+			},
+			WarningLogger: &Config.Logger{
+				Path:        LOGGER_PATH,
+				QueueBuffer: 10000,
+				Prefix:      "[Warning \"nodeResolver\"] ",
+			},
+			ErrorLogger: &Config.Logger{
+				Path:        LOGGER_PATH,
+				QueueBuffer: 10000,
+				Prefix:      "[Error \"nodeResolver\"] ",
+			},
+			DebugLogger: &Config.Logger{
+				Path:        LOGGER_PATH,
+				QueueBuffer: 10000,
+				Prefix:      "[Debug \"nodeResolver\"] ",
+			},
+		}, Resolver.New(&Config.Resolver{
+			Server: &Config.TcpServer{
+				Port:        60000,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
+			ConfigServer: &Config.TcpServer{
+				Port:        60001,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
+			TcpTimeoutMs: 5000,
+		})),
 		Node.New(&Config.Node{
 			Name:           "nodeBrokerChat",
 			RandomizerSeed: Tools.GetSystemTime(),
@@ -228,5 +229,7 @@ func main() {
 				QueueBuffer: 10000,
 				Prefix:      "[Debug \"nodeWebsocketHTTP\"] ",
 			},
-		}, appWebsocketHTTP.New()))
+		}, appWebsocketHTTP.New()),
+	),
+	)
 }
