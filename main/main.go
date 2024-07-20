@@ -43,7 +43,7 @@ func main() {
 		Server: &Config.TcpServer{
 			Port: 8081,
 		},
-		Pattern:                "/dashboard",
+		Pattern:                "/",
 		StatusUpdateIntervalMs: 1000,
 	},
 		Node.New(&Config.Node{
