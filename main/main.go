@@ -16,7 +16,33 @@ import (
 const LOGGER_PATH = "logs.log"
 
 func main() {
-	Dashboard.StartDashboard(8081, LOGGER_PATH, Node.New(&Config.Node{
+	Dashboard.StartDashboard(&Config.Node{
+		Name:           "dashboard",
+		RandomizerSeed: Tools.GetSystemTime(),
+		ErrorLogger: &Config.Logger{
+			Path:        LOGGER_PATH,
+			QueueBuffer: 10000,
+			Prefix:      "[Error \"Dashboard\"] ",
+		},
+		WarningLogger: &Config.Logger{
+			Path:        LOGGER_PATH,
+			QueueBuffer: 10000,
+			Prefix:      "[Warning \"Dashboard\"] ",
+		},
+		InfoLogger: &Config.Logger{
+			Path:        LOGGER_PATH,
+			QueueBuffer: 10000,
+			Prefix:      "[Info \"Dashboard\"] ",
+		},
+		DebugLogger: &Config.Logger{
+			Path:        LOGGER_PATH,
+			QueueBuffer: 10000,
+			Prefix:      "[Debug \"Dashboard\"] ",
+		},
+	}, &Config.Dashboard{
+		HttpPort:               8081,
+		StatusUpdateIntervalMs: 1000,
+	}, Node.New(&Config.Node{
 		Name:           "nodeResolver",
 		RandomizerSeed: Tools.GetSystemTime(),
 		InfoLogger: &Config.Logger{
