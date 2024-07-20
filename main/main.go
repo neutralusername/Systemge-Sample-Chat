@@ -232,4 +232,5 @@ func main() {
 		}, appWebsocketHTTP.New()),
 	),
 	)
+	<-make(chan struct{})
 }
