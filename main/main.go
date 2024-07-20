@@ -16,7 +16,7 @@ import (
 const LOGGER_PATH = "logs.log"
 
 func main() {
-	Dashboard.StartDashboard(8081, "dashboard.log", Node.New(&Config.Node{
+	Dashboard.StartDashboard(8081, LOGGER_PATH, Node.New(&Config.Node{
 		Name:           "nodeResolver",
 		RandomizerSeed: Tools.GetSystemTime(),
 		InfoLogger: &Config.Logger{
