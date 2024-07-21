@@ -40,8 +40,12 @@ func main() {
 			Prefix:      "[Debug \"dashboard\"] ",
 		},
 	}, Dashboard.New(&Config.Dashboard{
-		Server: &Config.TcpServer{
-			Port: 8081,
+		Http: &Config.Http{
+			Server: &Config.TcpServer{
+				Port:        8081,
+				TlsCertPath: "MyCertificate.crt",
+				TlsKeyPath:  "MyKey.key",
+			},
 		},
 		Pattern:                "/",
 		StatusUpdateIntervalMs: 1000,
