@@ -117,7 +117,7 @@ func main() {
 			},
 			Endpoint: &Config.TcpEndpoint{
 				Address: "127.0.0.1:60002",
-				Domain:  "example.com",
+				Domain:  "localhost",
 				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 			},
 			ConfigServer: &Config.TcpServer{
@@ -129,7 +129,7 @@ func main() {
 			AsyncTopics: []string{topics.ADD_MESSAGE},
 			ResolverConfigEndpoint: &Config.TcpEndpoint{
 				Address: "127.0.0.1:60001",
-				Domain:  "example.com",
+				Domain:  "localhost",
 				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 			},
 			SyncResponseTimeoutMs: 10000,
@@ -166,7 +166,7 @@ func main() {
 			},
 			Endpoint: &Config.TcpEndpoint{
 				Address: "127.0.0.1:60004",
-				Domain:  "example.com",
+				Domain:  "localhost",
 				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 			},
 			ConfigServer: &Config.TcpServer{
@@ -177,7 +177,7 @@ func main() {
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
 			ResolverConfigEndpoint: &Config.TcpEndpoint{
 				Address: "127.0.0.1:60001",
-				Domain:  "example.com",
+				Domain:  "localhost",
 				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 			},
 			SyncResponseTimeoutMs: 10000,
