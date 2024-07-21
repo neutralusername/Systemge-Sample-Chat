@@ -42,10 +42,9 @@ func main() {
 	}, Dashboard.New(&Config.Dashboard{
 		Http: &Config.Http{
 			Server: &Config.TcpServer{
-				Port:        8081,
-				TlsCertPath: "MyCertificate.crt",
-				TlsKeyPath:  "MyKey.key",
+				Port: 8081,
 			},
+			Whitelist: []string{"127.0.0.1"},
 		},
 		Pattern:                "/",
 		StatusUpdateIntervalMs: 1000,
