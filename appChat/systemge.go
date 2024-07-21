@@ -22,7 +22,7 @@ func (app *App) GetSystemgeComponentConfig() *Config.Systemge {
 
 		ResolverEndpoint: &Config.TcpEndpoint{
 			Address: "127.0.0.1:60000",
-			Domain:  "example.com",
+			Domain:  "localhost",
 			TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 		},
 	}
