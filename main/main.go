@@ -44,7 +44,6 @@ func main() {
 			Server: &Config.TcpServer{
 				Port: 8081,
 			},
-			Whitelist: []string{"127.0.0.1"},
 		},
 		Pattern:                "/",
 		StatusUpdateIntervalMs: 1000,
