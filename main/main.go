@@ -45,7 +45,6 @@ func main() {
 				Port: 8081,
 			},
 		},
-		Pattern:                "/",
 		StatusUpdateIntervalMs: 1000,
 	},
 		Node.New(&Config.Node{
