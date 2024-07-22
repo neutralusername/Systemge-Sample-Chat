@@ -18,8 +18,6 @@ func (app *App) GetSystemgeComponentConfig() *Config.Systemge {
 		SyncResponseTimeoutMs:     10000,
 		TcpTimeoutMs:              5000,
 
-		MaxSubscribeAttempts: 2,
-
 		ResolverEndpoint: &Config.TcpEndpoint{
 			Address: "127.0.0.1:60000",
 			Domain:  "localhost",
