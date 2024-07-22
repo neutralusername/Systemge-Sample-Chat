@@ -227,6 +227,5 @@ func main() {
 			},
 		}, appWebsocketHTTP.New()),
 	),
-	).Start()
-	<-make(chan struct{})
+	).StartBlocking()
 }
