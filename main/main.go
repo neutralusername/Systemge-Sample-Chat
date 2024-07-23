@@ -228,5 +228,5 @@ func main() {
 			},
 		}, appWebsocketHTTP.New()),
 	),
-	).StartBlocking(nil)
+	).StartBlocking()
 }
