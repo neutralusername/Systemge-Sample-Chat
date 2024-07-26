@@ -16,29 +16,10 @@ import (
 const LOGGER_PATH = "logs.log"
 
 func main() {
+	loggerQueue := Tools.NewLoggerQueue(LOGGER_PATH, 10000)
 	Node.New(&Config.Node{
 		Name:           "dashboard",
 		RandomizerSeed: Tools.GetSystemTime(),
-		ErrorLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Error \"dashboard\"] ",
-		},
-		WarningLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Warning \"dashboard\"] ",
-		},
-		InfoLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Info \"dashboard\"] ",
-		},
-		DebugLogger: &Config.Logger{
-			Path:        LOGGER_PATH,
-			QueueBuffer: 10000,
-			Prefix:      "[Debug \"dashboard\"] ",
-		},
 	}, Dashboard.New(&Config.Dashboard{
 		Server: &Config.TcpServer{
 			Port: 8081,
@@ -54,26 +35,9 @@ func main() {
 		Node.New(&Config.Node{
 			Name:           "nodeResolver",
 			RandomizerSeed: Tools.GetSystemTime(),
-			InfoLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Info \"nodeResolver\"] ",
-			},
-			WarningLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Warning \"nodeResolver\"] ",
-			},
-			ErrorLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Error \"nodeResolver\"] ",
-			},
-			DebugLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Debug \"nodeResolver\"] ",
-			},
+			InfoLogger:     Tools.NewLogger("[Info \"nodeResolver\"]", loggerQueue),
+			WarningLogger:  Tools.NewLogger("[Warning \"nodeResolver\"] ", loggerQueue),
+			ErrorLogger:    Tools.NewLogger("[Error \"nodeResolver\"] ", loggerQueue),
 		}, Resolver.New(&Config.Resolver{
 			Server: &Config.TcpServer{
 				Port:        60000,
@@ -90,26 +54,9 @@ func main() {
 		Node.New(&Config.Node{
 			Name:           "nodeBrokerChat",
 			RandomizerSeed: Tools.GetSystemTime(),
-			InfoLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Info \"nodeBrokerChat\"] ",
-			},
-			WarningLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Warning \"nodeBrokerChat\"] ",
-			},
-			ErrorLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Error \"nodeBrokerChat\"] ",
-			},
-			DebugLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Debug \"nodeBrokerChat\"] ",
-			},
+			InfoLogger:     Tools.NewLogger("[Info \"nodeBrokerChat\"]", loggerQueue),
+			WarningLogger:  Tools.NewLogger("[Warning \"nodeBrokerChat\"] ", loggerQueue),
+			ErrorLogger:    Tools.NewLogger("[Error \"nodeBrokerChat\"] ", loggerQueue),
 		}, Broker.New(&Config.Broker{
 			Server: &Config.TcpServer{
 				Port:        60002,
@@ -139,26 +86,9 @@ func main() {
 		Node.New(&Config.Node{
 			Name:           "nodeBrokerWebsocketHTTP",
 			RandomizerSeed: Tools.GetSystemTime(),
-			InfoLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Info \"nodeBrokerWebsocketHTTP\"] ",
-			},
-			WarningLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Warning \"nodeBrokerWebsocketHTTP\"] ",
-			},
-			ErrorLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Error \"nodeBrokerWebsocketHTTP\"] ",
-			},
-			DebugLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Debug \"nodeBrokerWebsocketHTTP\"] ",
-			},
+			InfoLogger:     Tools.NewLogger("[Info \"nodeBrokerWebsocketHTTP\"]", loggerQueue),
+			WarningLogger:  Tools.NewLogger("[Warning \"nodeBrokerWebsocketHTTP\"] ", loggerQueue),
+			ErrorLogger:    Tools.NewLogger("[Error \"nodeBrokerWebsocketHTTP\"] ", loggerQueue),
 		}, Broker.New(&Config.Broker{
 			Server: &Config.TcpServer{
 				Port:        60004,
@@ -187,50 +117,16 @@ func main() {
 		Node.New(&Config.Node{
 			Name:           "nodeChat",
 			RandomizerSeed: Tools.GetSystemTime(),
-			InfoLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Info \"nodeChat\"] ",
-			},
-			WarningLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Warning \"nodeChat\"] ",
-			},
-			ErrorLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Error \"nodeChat\"] ",
-			},
-			DebugLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Debug \"nodeChat\"] ",
-			},
+			InfoLogger:     Tools.NewLogger("[Info \"nodeChat\"]", loggerQueue),
+			WarningLogger:  Tools.NewLogger("[Warning \"nodeChat\"] ", loggerQueue),
+			ErrorLogger:    Tools.NewLogger("[Error \"nodeChat\"] ", loggerQueue),
 		}, appChat.New()),
 		Node.New(&Config.Node{
 			Name:           "nodeWebsocketHTTP",
 			RandomizerSeed: Tools.GetSystemTime(),
-			InfoLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Info \"nodeWebsocketHTTP\"] ",
-			},
-			WarningLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Warning \"nodeWebsocketHTTP\"] ",
-			},
-			ErrorLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Error \"nodeWebsocketHTTP\"] ",
-			},
-			DebugLogger: &Config.Logger{
-				Path:        LOGGER_PATH,
-				QueueBuffer: 10000,
-				Prefix:      "[Debug \"nodeWebsocketHTTP\"] ",
-			},
+			InfoLogger:     Tools.NewLogger("[Info \"nodeWebsocketHTTP\"]", loggerQueue),
+			WarningLogger:  Tools.NewLogger("[Warning \"nodeWebsocketHTTP\"] ", loggerQueue),
+			ErrorLogger:    Tools.NewLogger("[Error \"nodeWebsocketHTTP\"] ", loggerQueue),
 		}, appWebsocketHTTP.New()),
 	),
 	).StartBlocking()
