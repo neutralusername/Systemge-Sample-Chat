@@ -6,7 +6,7 @@ replace Systemge => ../Systemge
 
 require (
 	github.com/gorilla/websocket v1.5.3
-	github.com/neutralusername/Systemge v0.0.0-20240727152025-0c6d1dc9a14b
+	github.com/neutralusername/Systemge v0.0.0-20240727152733-85e30976b253
 )
 
 require golang.org/x/oauth2 v0.21.0 // indirect
