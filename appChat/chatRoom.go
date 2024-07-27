@@ -1,6 +1,6 @@
 package appChat
 
-import "Systemge/Error"
+import "github.com/neutralusername/Systemge/Error"
 
 const RINGBUFFER_SIZE = 7
 

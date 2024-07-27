@@ -1,6 +1,6 @@
 package appChat
 
-import "Systemge/Error"
+import "github.com/neutralusername/Systemge/Error"
 
 type Chatter struct {
 	id     string //websocketId

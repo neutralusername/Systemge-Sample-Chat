@@ -1,11 +1,12 @@
 package appWebsocketHTTP
 
 import (
-	"Systemge/Config"
-	"Systemge/Message"
-	"Systemge/Node"
 	"SystemgeSampleChat/topics"
 	"net/http"
+
+	"github.com/neutralusername/Systemge/Config"
+	"github.com/neutralusername/Systemge/Message"
+	"github.com/neutralusername/Systemge/Node"
 
 	"github.com/gorilla/websocket"
 )

@@ -1,9 +1,10 @@
 package appChat
 
 import (
-	"Systemge/Error"
-	"Systemge/Node"
 	"sync"
+
+	"github.com/neutralusername/Systemge/Error"
+	"github.com/neutralusername/Systemge/Node"
 )
 
 type App struct {
