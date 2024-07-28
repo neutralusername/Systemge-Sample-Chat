@@ -19,7 +19,7 @@ export class root extends React.Component {
             (this.state.WS_CONNECTION.onmessage = (event) => {
                 let message = JSON.parse(event.data);
                 switch (message.topic) {
-                    case "joinRoom":
+                    case "join":
                         this.state.setStateRoot({
                             messages: JSON.parse(message.payload),
                         });
