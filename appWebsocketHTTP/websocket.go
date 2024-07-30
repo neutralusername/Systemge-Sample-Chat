@@ -1,6 +1,7 @@
 package appWebsocketHTTP
 
 import (
+	"SystemgeSampleChat/dto"
 	"SystemgeSampleChat/topics"
 
 	"github.com/neutralusername/Systemge/Message"
@@ -14,7 +15,7 @@ func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.Webso
 }
 
 func (app *AppWebsocketHTTP) AddMessage(node *Node.Node, connection *Node.WebsocketClient, message *Message.Message) error {
-	err := node.AsyncMessage(topics.ADD_MESSAGE, string(Message.NewAsync(connection.GetId(), message.GetPayload()).Serialize()))
+	err := node.AsyncMessage(topics.ADD_MESSAGE, dto.NewChatMessage(connection.GetId(), message.GetPayload()).Marshal())
 	if err != nil {
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 			errorLogger.Log("Failed to propagate message" + err.Error())

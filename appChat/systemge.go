@@ -1,6 +1,7 @@
 package appChat
 
 import (
+	"SystemgeSampleChat/dto"
 	"SystemgeSampleChat/topics"
 
 	"github.com/neutralusername/Systemge/Error"
@@ -18,11 +19,8 @@ func (app *App) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
 func (app *App) AddMessage(node *Node.Node, message *Message.Message) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
-	msg, err := Message.Deserialize([]byte(message.GetPayload()))
-	if err != nil {
-		return Error.New("Failed to deserialize message", err)
-	}
-	chatter := app.chatters[msg.GetTopic()]
+	chatMessage := dto.UnmarshalChatMessage(message.GetPayload())
+	chatter := app.chatters[chatMessage.Sender]
 	if chatter == nil {
 		return Error.New("Chatter not found", nil)
 	}
@@ -30,10 +28,8 @@ func (app *App) AddMessage(node *Node.Node, message *Message.Message) error {
 	if room == nil {
 		return Error.New("Room not found", nil)
 	}
-	chatMessage := NewChatMessage(chatter.id, msg.GetPayload())
 	room.AddMessage(chatMessage)
-	propagateMsg := Message.NewAsync(chatter.roomId, chatMessage.Marshal())
-	node.AsyncMessage(topics.PROPAGATE_MESSAGE, string(propagateMsg.Serialize()))
+	node.AsyncMessage(topics.PROPAGATE_MESSAGE, message.GetPayload())
 	return nil
 }
 

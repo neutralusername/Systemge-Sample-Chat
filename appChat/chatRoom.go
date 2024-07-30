@@ -1,14 +1,16 @@
 package appChat
 
-import "github.com/neutralusername/Systemge/Error"
+import (
+	"SystemgeSampleChat/dto"
 
-const RINGBUFFER_SIZE = 7
+	"github.com/neutralusername/Systemge/Error"
+)
 
 type Room struct {
 	id string //websocketServer groupId
 
 	//messages are stored in a ring buffer to limit memory usage per room
-	messageRingBuffer           [RINGBUFFER_SIZE]*ChatMessage
+	messageRingBuffer           [dto.RINGBUFFER_SIZE]*dto.ChatMessage
 	messageRingBufferWriteIndex int
 	chatters                    map[string]*Chatter //chatterId -> chatter
 }
@@ -16,10 +18,29 @@ type Room struct {
 func NewRoom(id string) *Room {
 	return &Room{
 		id:                          id,
-		messageRingBuffer:           [RINGBUFFER_SIZE]*ChatMessage{},
+		messageRingBuffer:           [dto.RINGBUFFER_SIZE]*dto.ChatMessage{},
 		messageRingBufferWriteIndex: 0,
 		chatters:                    map[string]*Chatter{},
 	}
+}
+
+func (room *Room) AddMessage(message *dto.ChatMessage) {
+	room.messageRingBuffer[room.messageRingBufferWriteIndex] = message
+	room.messageRingBufferWriteIndex = (room.messageRingBufferWriteIndex + 1) % dto.RINGBUFFER_SIZE
+}
+
+func (app *App) GetRoomMessages(roomId string) []string {
+	room := app.rooms[roomId]
+	if room == nil {
+		return []string{}
+	}
+	messages := []string{}
+	for i := 0; i < dto.RINGBUFFER_SIZE; i++ {
+		if message := room.messageRingBuffer[(room.messageRingBufferWriteIndex+i)%dto.RINGBUFFER_SIZE]; message != nil {
+			messages = append(messages, message.Marshal())
+		}
+	}
+	return messages
 }
 
 func (app *App) AddToRoom(chatterid string, roomId string) error {
