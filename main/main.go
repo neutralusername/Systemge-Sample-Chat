@@ -36,13 +36,11 @@ func main() {
 	},
 		Node.New(&Config.NewNode{
 			NodeConfig: &Config.Node{
-				Name:                      "nodeChat",
-				RandomizerSeed:            Tools.GetSystemTime(),
-				InfoLoggerPath:            LOGGER_PATH,
-				WarningLoggerPath:         LOGGER_PATH,
-				ErrorLoggerPath:           LOGGER_PATH,
-				InternalInfoLoggerPath:    LOGGER_PATH,
-				InternalWarningLoggerPath: LOGGER_PATH,
+				Name:              "nodeChat",
+				RandomizerSeed:    Tools.GetSystemTime(),
+				InfoLoggerPath:    LOGGER_PATH,
+				WarningLoggerPath: LOGGER_PATH,
+				ErrorLoggerPath:   LOGGER_PATH,
 			},
 			SystemgeConfig: &Config.Systemge{
 				HandleMessagesSequentially: false,
@@ -68,13 +66,11 @@ func main() {
 		}, appChat.New()),
 		Node.New(&Config.NewNode{
 			NodeConfig: &Config.Node{
-				Name:                      "nodeWebsocketHTTP",
-				RandomizerSeed:            Tools.GetSystemTime(),
-				InfoLoggerPath:            LOGGER_PATH,
-				WarningLoggerPath:         LOGGER_PATH,
-				ErrorLoggerPath:           LOGGER_PATH,
-				InternalInfoLoggerPath:    LOGGER_PATH,
-				InternalWarningLoggerPath: LOGGER_PATH,
+				Name:              "nodeWebsocketHTTP",
+				RandomizerSeed:    Tools.GetSystemTime(),
+				InfoLoggerPath:    LOGGER_PATH,
+				WarningLoggerPath: LOGGER_PATH,
+				ErrorLoggerPath:   LOGGER_PATH,
 			},
 			SystemgeConfig: &Config.Systemge{
 				HandleMessagesSequentially: false,
