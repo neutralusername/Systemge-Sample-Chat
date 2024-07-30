@@ -18,10 +18,6 @@ func (app *AppWebsocketHTTP) GetSyncMessageHandlers() map[string]Node.SyncMessag
 }
 
 func (app *AppWebsocketHTTP) PropagateMessage(node *Node.Node, message *Message.Message) error {
-	propagateMsg, err := Message.Deserialize([]byte(message.GetPayload()))
-	if err != nil {
-		return err
-	}
-	node.WebsocketGroupcast(propagateMsg.GetTopic(), Message.NewAsync("propagateMessage", propagateMsg.GetPayload()))
+	node.WebsocketBroadcast(message)
 	return nil
 }

@@ -25,14 +25,6 @@ func (app *AppWebsocketHTTP) AddMessage(node *Node.Node, connection *Node.Websoc
 }
 
 func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *Node.WebsocketClient) {
-	err := node.AddToWebsocketGroup("lobby", websocketClient.GetId())
-	if err != nil {
-		websocketClient.Disconnect()
-		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
-			errorLogger.Log("Failed to add to group" + err.Error())
-		}
-		return
-	}
 	responseChannel, err := node.SyncMessage(topics.JOIN, websocketClient.GetId())
 	if err != nil {
 		websocketClient.Disconnect()
@@ -53,13 +45,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 }
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClient *Node.WebsocketClient) {
-	err := node.RemoveFromWebsocketGroup("lobby", websocketClient.GetId())
-	if err != nil {
-		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
-			errorLogger.Log("Failed to remove from group" + err.Error())
-		}
-	}
-	_, err = node.SyncMessage(topics.LEAVE, websocketClient.GetId())
+	_, err := node.SyncMessage(topics.LEAVE, websocketClient.GetId())
 	if err != nil {
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 			errorLogger.Log("Failed to leave room" + err.Error())
