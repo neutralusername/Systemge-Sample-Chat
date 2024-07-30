@@ -3,30 +3,9 @@ package appWebsocketHTTP
 import (
 	"SystemgeSampleChat/topics"
 
-	"github.com/neutralusername/Systemge/Config"
-	"github.com/neutralusername/Systemge/Helpers"
 	"github.com/neutralusername/Systemge/Message"
 	"github.com/neutralusername/Systemge/Node"
 )
-
-func (app *AppWebsocketHTTP) GetSystemgeComponentConfig() *Config.Systemge {
-	return &Config.Systemge{
-		HandleMessagesSequentially: false,
-
-		BrokerSubscribeDelayMs:    1000,
-		TopicResolutionLifetimeMs: 10000,
-		SyncResponseTimeoutMs:     10000,
-		TcpTimeoutMs:              5000,
-
-		ResolverEndpoints: []*Config.TcpEndpoint{
-			{
-				Address: "127.0.0.1:60000",
-				Domain:  "example.com",
-				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
-			},
-		},
-	}
-}
 
 func (app *AppWebsocketHTTP) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
 	return map[string]Node.AsyncMessageHandler{
@@ -39,6 +18,10 @@ func (app *AppWebsocketHTTP) GetSyncMessageHandlers() map[string]Node.SyncMessag
 }
 
 func (app *AppWebsocketHTTP) PropagateMessage(node *Node.Node, message *Message.Message) error {
-	node.WebsocketGroupcast(message.GetOrigin(), message)
+	propagateMsg, err := Message.Deserialize([]byte(message.GetPayload()))
+	if err != nil {
+		return err
+	}
+	node.WebsocketGroupcast(propagateMsg.GetTopic(), Message.NewAsync("propagateMessage", propagateMsg.GetPayload()))
 	return nil
 }

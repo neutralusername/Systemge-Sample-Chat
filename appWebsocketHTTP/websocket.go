@@ -2,36 +2,10 @@ package appWebsocketHTTP
 
 import (
 	"SystemgeSampleChat/topics"
-	"net/http"
 
-	"github.com/neutralusername/Systemge/Config"
 	"github.com/neutralusername/Systemge/Message"
 	"github.com/neutralusername/Systemge/Node"
-
-	"github.com/gorilla/websocket"
 )
-
-func (app *AppWebsocketHTTP) GetWebsocketComponentConfig() *Config.Websocket {
-	return &Config.Websocket{
-		Pattern: "/ws",
-		Server: &Config.TcpServer{
-			Port:      8443,
-			Blacklist: []string{},
-			Whitelist: []string{},
-		},
-		HandleClientMessagesSequentially: false,
-
-		ClientMessageCooldownMs: 0,
-		ClientWatchdogTimeoutMs: 20000,
-		Upgrader: &websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-			CheckOrigin: func(r *http.Request) bool {
-				return true
-			},
-		},
-	}
-}
 
 func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.WebsocketMessageHandler {
 	return map[string]Node.WebsocketMessageHandler{
@@ -40,7 +14,7 @@ func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.Webso
 }
 
 func (app *AppWebsocketHTTP) AddMessage(node *Node.Node, connection *Node.WebsocketClient, message *Message.Message) error {
-	err := node.AsyncMessage(topics.ADD_MESSAGE, connection.GetId(), message.GetPayload())
+	err := node.AsyncMessage(topics.ADD_MESSAGE, string(Message.NewAsync(connection.GetId(), message.GetPayload()).Serialize()))
 	if err != nil {
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 			errorLogger.Log("Failed to propagate message" + err.Error())
@@ -58,7 +32,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 		}
 		return
 	}
-	response, err := node.SyncMessage(topics.JOIN, websocketClient.GetId(), "lobby")
+	responseChannel, err := node.SyncMessage(topics.JOIN, websocketClient.GetId())
 	if err != nil {
 		websocketClient.Disconnect()
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
@@ -66,7 +40,15 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 		}
 		return
 	}
-	websocketClient.Send([]byte(response.Serialize()))
+	response, err := responseChannel.ReceiveResponse()
+	if err != nil {
+		websocketClient.Disconnect()
+		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
+			errorLogger.Log("Failed to receive response" + err.Error())
+		}
+		return
+	}
+	websocketClient.Send(Message.NewAsync("join", response.GetMessage().GetPayload()).Serialize())
 }
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClient *Node.WebsocketClient) {
@@ -76,7 +58,7 @@ func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClien
 			errorLogger.Log("Failed to remove from group" + err.Error())
 		}
 	}
-	_, err = node.SyncMessage(topics.LEAVE, websocketClient.GetId(), "")
+	_, err = node.SyncMessage(topics.LEAVE, "")
 	if err != nil {
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 			errorLogger.Log("Failed to leave room" + err.Error())
