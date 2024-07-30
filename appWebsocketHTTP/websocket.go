@@ -33,7 +33,6 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 		return
 	}
 	responseChannel, err := node.SyncMessage(topics.JOIN, websocketClient.GetId())
-	println("test")
 	if err != nil {
 		websocketClient.Disconnect()
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
