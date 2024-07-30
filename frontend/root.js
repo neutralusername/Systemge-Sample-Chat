@@ -20,13 +20,11 @@ export class root extends React.Component {
                 let message = JSON.parse(event.data);
                 switch (message.topic) {
                     case "join":
-                        console.log(message)
                         this.state.setStateRoot({
                             messages: JSON.parse(message.payload),
                         });
                         break;
                     case "propagateMessage":
-                        console.log(message)
                         let messages = this.state.messages;
                         messages.push(JSON.parse(message.payload));
                         this.state.setStateRoot({

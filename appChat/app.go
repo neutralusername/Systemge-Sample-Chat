@@ -8,15 +8,15 @@ import (
 )
 
 type App struct {
-	rooms    map[string]*Room    //roomId -> room
-	chatters map[string]*Chatter //chatterId -> chatter
+	rooms    map[string]*room    //roomId -> room
+	chatters map[string]*chatter //chatterId -> chatter
 	mutex    sync.Mutex
 }
 
 func New() *App {
 	app := &App{
-		rooms:    map[string]*Room{},
-		chatters: map[string]*Chatter{},
+		rooms:    map[string]*room{},
+		chatters: map[string]*chatter{},
 		mutex:    sync.Mutex{},
 	}
 	return app
@@ -24,12 +24,12 @@ func New() *App {
 
 func (app *App) GetCommandHandlers() map[string]Node.CommandHandler {
 	return map[string]Node.CommandHandler{
-		"getChatters": app.GetChatters,
-		"getRooms":    app.GetRooms,
+		"getChatters": app.getChatters,
+		"getRooms":    app.getRooms,
 	}
 }
 
-func (app *App) GetChatters(node *Node.Node, args []string) (string, error) {
+func (app *App) getChatters(node *Node.Node, args []string) (string, error) {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	if len(args) != 1 {
@@ -46,7 +46,7 @@ func (app *App) GetChatters(node *Node.Node, args []string) (string, error) {
 	return resultStr, nil
 }
 
-func (app *App) GetRooms(node *Node.Node, args []string) (string, error) {
+func (app *App) getRooms(node *Node.Node, args []string) (string, error) {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	resultStr := ""

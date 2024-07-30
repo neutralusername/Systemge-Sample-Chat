@@ -2,28 +2,28 @@ package appChat
 
 import "github.com/neutralusername/Systemge/Error"
 
-type Chatter struct {
+type chatter struct {
 	id     string //websocketId
 	roomId string
 }
 
-func NewChatter(id string) *Chatter {
-	return &Chatter{
+func newChatter(id string) *chatter {
+	return &chatter{
 		id: id,
 	}
 }
 
-func (app *App) AddChatter(chatterId string) error {
+func (app *App) addChatter(chatterId string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	if app.chatters[chatterId] != nil {
 		return Error.New("Chatter already exists", nil)
 	}
-	app.chatters[chatterId] = NewChatter(chatterId)
+	app.chatters[chatterId] = newChatter(chatterId)
 	return nil
 }
 
-func (app *App) RemoveChatter(chatterId string) error {
+func (app *App) removeChatter(chatterId string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	chatter := app.chatters[chatterId]

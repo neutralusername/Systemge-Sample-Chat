@@ -10,11 +10,11 @@ import (
 
 func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.WebsocketMessageHandler {
 	return map[string]Node.WebsocketMessageHandler{
-		topics.ADD_MESSAGE: app.AddMessage,
+		topics.ADD_MESSAGE: app.addMessage,
 	}
 }
 
-func (app *AppWebsocketHTTP) AddMessage(node *Node.Node, connection *Node.WebsocketClient, message *Message.Message) error {
+func (app *AppWebsocketHTTP) addMessage(node *Node.Node, connection *Node.WebsocketClient, message *Message.Message) error {
 	err := node.AsyncMessage(topics.ADD_MESSAGE, dto.NewChatMessage(connection.GetId(), message.GetPayload()).Marshal())
 	if err != nil {
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {

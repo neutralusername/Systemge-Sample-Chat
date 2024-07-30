@@ -12,11 +12,11 @@ import (
 
 func (app *App) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
 	return map[string]Node.AsyncMessageHandler{
-		topics.ADD_MESSAGE: app.AddMessage,
+		topics.ADD_MESSAGE: app.addMessage,
 	}
 }
 
-func (app *App) AddMessage(node *Node.Node, message *Message.Message) error {
+func (app *App) addMessage(node *Node.Node, message *Message.Message) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	chatMessage := dto.UnmarshalChatMessage(message.GetPayload())
@@ -28,33 +28,33 @@ func (app *App) AddMessage(node *Node.Node, message *Message.Message) error {
 	if room == nil {
 		return Error.New("Room not found", nil)
 	}
-	room.AddMessage(chatMessage)
+	room.addMessage(chatMessage)
 	node.AsyncMessage(topics.PROPAGATE_MESSAGE, message.GetPayload())
 	return nil
 }
 
 func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 	return map[string]Node.SyncMessageHandler{
-		topics.JOIN:  app.Join,
-		topics.LEAVE: app.Leave,
+		topics.JOIN:  app.join,
+		topics.LEAVE: app.leave,
 	}
 }
 
-func (app *App) Join(node *Node.Node, message *Message.Message) (string, error) {
-	if err := app.AddChatter(message.GetPayload()); err != nil {
+func (app *App) join(node *Node.Node, message *Message.Message) (string, error) {
+	if err := app.addChatter(message.GetPayload()); err != nil {
 		return "", Error.New("Failed to create chatter", err)
 	}
-	if err := app.AddToRoom(message.GetPayload(), "lobby"); err != nil {
+	if err := app.addToRoom(message.GetPayload(), "lobby"); err != nil {
 		return "", Error.New("Failed to join room", err)
 	}
-	return Helpers.StringsToJsonObjectArray(app.GetRoomMessages("lobby")), nil
+	return Helpers.StringsToJsonObjectArray(app.getRoomMessages("lobby")), nil
 }
 
-func (app *App) Leave(node *Node.Node, message *Message.Message) (string, error) {
-	if err := app.RemoveFromRoom(message.GetPayload()); err != nil {
+func (app *App) leave(node *Node.Node, message *Message.Message) (string, error) {
+	if err := app.removeFromRoom(message.GetPayload()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}
-	if err := app.RemoveChatter(message.GetPayload()); err != nil {
+	if err := app.removeChatter(message.GetPayload()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}
 	return "", nil

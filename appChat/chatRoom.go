@@ -6,30 +6,30 @@ import (
 	"github.com/neutralusername/Systemge/Error"
 )
 
-type Room struct {
+type room struct {
 	id string //websocketServer groupId
 
 	//messages are stored in a ring buffer to limit memory usage per room
 	messageRingBuffer           [dto.RINGBUFFER_SIZE]*dto.ChatMessage
 	messageRingBufferWriteIndex int
-	chatters                    map[string]*Chatter //chatterId -> chatter
+	chatters                    map[string]*chatter //chatterId -> chatter
 }
 
-func NewRoom(id string) *Room {
-	return &Room{
+func rewRoom(id string) *room {
+	return &room{
 		id:                          id,
 		messageRingBuffer:           [dto.RINGBUFFER_SIZE]*dto.ChatMessage{},
 		messageRingBufferWriteIndex: 0,
-		chatters:                    map[string]*Chatter{},
+		chatters:                    map[string]*chatter{},
 	}
 }
 
-func (room *Room) AddMessage(message *dto.ChatMessage) {
+func (room *room) addMessage(message *dto.ChatMessage) {
 	room.messageRingBuffer[room.messageRingBufferWriteIndex] = message
 	room.messageRingBufferWriteIndex = (room.messageRingBufferWriteIndex + 1) % dto.RINGBUFFER_SIZE
 }
 
-func (app *App) GetRoomMessages(roomId string) []string {
+func (app *App) getRoomMessages(roomId string) []string {
 	room := app.rooms[roomId]
 	if room == nil {
 		return []string{}
@@ -43,7 +43,7 @@ func (app *App) GetRoomMessages(roomId string) []string {
 	return messages
 }
 
-func (app *App) AddToRoom(chatterid string, roomId string) error {
+func (app *App) addToRoom(chatterid string, roomId string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	chatter := app.chatters[chatterid]
@@ -52,7 +52,7 @@ func (app *App) AddToRoom(chatterid string, roomId string) error {
 	}
 	room := app.rooms[roomId]
 	if room == nil {
-		room = NewRoom(roomId)
+		room = rewRoom(roomId)
 		app.rooms[roomId] = room
 	}
 	chatter.roomId = roomId
@@ -60,7 +60,7 @@ func (app *App) AddToRoom(chatterid string, roomId string) error {
 	return nil
 }
 
-func (app *App) RemoveFromRoom(chatterId string) error {
+func (app *App) removeFromRoom(chatterId string) error {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	chatter := app.chatters[chatterId]

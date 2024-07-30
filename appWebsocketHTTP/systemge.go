@@ -9,7 +9,7 @@ import (
 
 func (app *AppWebsocketHTTP) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
 	return map[string]Node.AsyncMessageHandler{
-		topics.PROPAGATE_MESSAGE: app.PropagateMessage,
+		topics.PROPAGATE_MESSAGE: app.propagateMessage,
 	}
 }
 
@@ -17,7 +17,7 @@ func (app *AppWebsocketHTTP) GetSyncMessageHandlers() map[string]Node.SyncMessag
 	return map[string]Node.SyncMessageHandler{}
 }
 
-func (app *AppWebsocketHTTP) PropagateMessage(node *Node.Node, message *Message.Message) error {
+func (app *AppWebsocketHTTP) propagateMessage(node *Node.Node, message *Message.Message) error {
 	node.WebsocketBroadcast(message)
 	return nil
 }
