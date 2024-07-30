@@ -33,6 +33,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 		return
 	}
 	responseChannel, err := node.SyncMessage(topics.JOIN, websocketClient.GetId())
+	println("test")
 	if err != nil {
 		websocketClient.Disconnect()
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
@@ -58,7 +59,7 @@ func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClien
 			errorLogger.Log("Failed to remove from group" + err.Error())
 		}
 	}
-	_, err = node.SyncMessage(topics.LEAVE, "")
+	_, err = node.SyncMessage(topics.LEAVE, websocketClient.GetId())
 	if err != nil {
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 			errorLogger.Log("Failed to leave room" + err.Error())

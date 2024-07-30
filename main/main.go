@@ -62,6 +62,7 @@ func main() {
 				MaxPayloadSize:           0,
 				MaxTopicSize:             0,
 				MaxSyncTokenSize:         0,
+				SyncResponseLimit:        1,
 			},
 		}, appChat.New()),
 		Node.New(&Config.NewNode{
@@ -92,6 +93,7 @@ func main() {
 				MaxPayloadSize:           0,
 				MaxTopicSize:             0,
 				MaxSyncTokenSize:         0,
+				SyncResponseLimit:        1,
 			},
 			HttpConfig: &Config.HTTP{
 				ServerConfig: &Config.TcpServer{
