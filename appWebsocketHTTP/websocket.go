@@ -41,7 +41,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 		}
 		return
 	}
-	websocketClient.Send(Message.NewAsync("join", response.GetMessage().GetPayload()).Serialize())
+	websocketClient.Send(Message.NewAsync("join", response.GetPayload()).Serialize())
 }
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClient *Node.WebsocketClient) {
