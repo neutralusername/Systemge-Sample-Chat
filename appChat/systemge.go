@@ -57,5 +57,6 @@ func (app *App) leave(node *Node.Node, message *Message.Message) (string, error)
 	if err := app.removeChatter(message.GetPayload()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}
+	println("test")
 	return "", nil
 }

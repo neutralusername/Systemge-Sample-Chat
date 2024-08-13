@@ -24,8 +24,24 @@ func main() {
 		ServerConfig: &Config.TcpServer{
 			Port: 8081,
 		},
-		NodeStatusIntervalMs:           1000,
-		NodeSystemgeCounterIntervalMs:  1000,
+		NodeStatusIntervalMs: 1000,
+
+		NodeSystemgeClientCounterIntervalMs:             1000,
+		NodeSystemgeClientRateLimitCounterIntervalMs:    1000,
+		NodeSystemgeClientConnectionCounterIntervalMs:   1000,
+		NodeSystemgeClientAsyncMessageCounterIntervalMs: 1000,
+		NodeSystemgeClientSyncResponseCounterIntervalMs: 1000,
+		NodeSystemgeClientSyncRequestCounterIntervalMs:  1000,
+		NodeSystemgeClientTopicCounterIntervalMs:        1000,
+
+		NodeSystemgeServerCounterIntervalMs:             1000,
+		NodeSystemgeServerRateLimitCounterIntervalMs:    1000,
+		NodeSystemgeServerConnectionCounterIntervalMs:   1000,
+		NodeSystemgeServerAsyncMessageCounterIntervalMs: 1000,
+		NodeSystemgeServerSyncResponseCounterIntervalMs: 1000,
+		NodeSystemgeServerSyncRequestCounterIntervalMs:  1000,
+		NodeSystemgeServerTopicCounterIntervalMs:        1000,
+
 		NodeWebsocketCounterIntervalMs: 1000,
 		HeapUpdateIntervalMs:           1000,
 		NodeSpawnerCounterIntervalMs:   1000,
@@ -42,27 +58,41 @@ func main() {
 				WarningLoggerPath: LOGGER_PATH,
 				ErrorLoggerPath:   LOGGER_PATH,
 			},
-			SystemgeConfig: &Config.Systemge{
+			SystemgeServerConfig: &Config.SystemgeServer{
+				TcpTimeoutMs: 5000,
 				ProcessMessagesOfEachConnectionSequentially: true,
-				ProcessAllMessagesSequentially:              false,
-
+				ProcessAllMessagesSequentially:              true,
+				ProcessAllMessagesSequentiallyChannelSize:   10000,
+				ServerConfig: &Config.TcpServer{
+					Port: 60002,
+				},
+				Endpoint: &Config.TcpEndpoint{
+					Address: "localhost:60002",
+				},
+				TcpBufferBytes:           1024 * 4,
+				IncomingMessageByteLimit: 0,
+				MaxPayloadSize:           0,
+				MaxTopicSize:             0,
+				MaxSyncTokenSize:         0,
+				MaxNodeNameSize:          0,
+			},
+			SystemgeClientConfig: &Config.SystemgeClient{
 				SyncRequestTimeoutMs:            10000,
 				TcpTimeoutMs:                    5000,
 				MaxConnectionAttempts:           0,
 				ConnectionAttemptDelayMs:        1000,
 				StopAfterOutgoingConnectionLoss: true,
-				ServerConfig: &Config.TcpServer{
-					Port: 60001,
-				},
 				EndpointConfigs: []*Config.TcpEndpoint{
 					{
-						Address: "localhost:60002",
+						Address: "localhost:60001",
 					},
 				},
+				TcpBufferBytes:           1024 * 4,
 				IncomingMessageByteLimit: 0,
 				MaxPayloadSize:           0,
 				MaxTopicSize:             0,
 				MaxSyncTokenSize:         0,
+				MaxNodeNameSize:          0,
 			},
 		}, appChat.New()),
 		Node.New(&Config.NewNode{
@@ -73,27 +103,41 @@ func main() {
 				WarningLoggerPath: LOGGER_PATH,
 				ErrorLoggerPath:   LOGGER_PATH,
 			},
-			SystemgeConfig: &Config.Systemge{
+			SystemgeServerConfig: &Config.SystemgeServer{
+				TcpTimeoutMs: 5000,
 				ProcessMessagesOfEachConnectionSequentially: true,
-				ProcessAllMessagesSequentially:              false,
-
+				ProcessAllMessagesSequentially:              true,
+				ProcessAllMessagesSequentiallyChannelSize:   10000,
+				ServerConfig: &Config.TcpServer{
+					Port: 60001,
+				},
+				Endpoint: &Config.TcpEndpoint{
+					Address: "localhost:60001",
+				},
+				TcpBufferBytes:           1024 * 4,
+				IncomingMessageByteLimit: 0,
+				MaxPayloadSize:           0,
+				MaxTopicSize:             0,
+				MaxSyncTokenSize:         0,
+				MaxNodeNameSize:          0,
+			},
+			SystemgeClientConfig: &Config.SystemgeClient{
 				SyncRequestTimeoutMs:            10000,
 				TcpTimeoutMs:                    5000,
 				MaxConnectionAttempts:           0,
 				ConnectionAttemptDelayMs:        1000,
 				StopAfterOutgoingConnectionLoss: true,
-				ServerConfig: &Config.TcpServer{
-					Port: 60002,
-				},
 				EndpointConfigs: []*Config.TcpEndpoint{
 					{
-						Address: "localhost:60001",
+						Address: "localhost:60002",
 					},
 				},
+				TcpBufferBytes:           1024 * 4,
 				IncomingMessageByteLimit: 0,
 				MaxPayloadSize:           0,
 				MaxTopicSize:             0,
 				MaxSyncTokenSize:         0,
+				MaxNodeNameSize:          0,
 			},
 			HttpConfig: &Config.HTTP{
 				ServerConfig: &Config.TcpServer{

@@ -15,9 +15,7 @@ type App struct {
 
 func New() *App {
 	app := &App{
-		rooms:    map[string]*room{},
-		chatters: map[string]*chatter{},
-		mutex:    sync.Mutex{},
+		mutex: sync.Mutex{},
 	}
 	return app
 }
