@@ -1,33 +1,72 @@
 package appChat
 
 import (
+	"SystemgeSampleChat/topics"
 	"sync"
 
+	"github.com/neutralusername/Systemge/Commands"
+	"github.com/neutralusername/Systemge/Config"
+	"github.com/neutralusername/Systemge/Dashboard"
 	"github.com/neutralusername/Systemge/Error"
-	"github.com/neutralusername/Systemge/Node"
+	"github.com/neutralusername/Systemge/SystemgeClient"
+	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
 )
 
 type App struct {
 	rooms    map[string]*room    //roomId -> room
 	chatters map[string]*chatter //chatterId -> chatter
 	mutex    sync.Mutex
+
+	systemgeClient *SystemgeClient.SystemgeClient
 }
 
 func New() *App {
 	app := &App{
 		mutex: sync.Mutex{},
 	}
+
+	app.systemgeClient = SystemgeClient.New(
+		&Config.SystemgeClient{
+			Name: "systemgeClient",
+			EndpointConfigs: []*Config.TcpEndpoint{
+				{
+					Address: "localhost:60001",
+				},
+			},
+			ConnectionConfig: &Config.SystemgeConnection{},
+		},
+		nil, nil,
+		SystemgeMessageHandler.New(SystemgeMessageHandler.AsyncMessageHandlers{
+			topics.ADD_MESSAGE: app.addMessage,
+		}, SystemgeMessageHandler.SyncMessageHandlers{
+			topics.JOIN:  app.join,
+			topics.LEAVE: app.leave,
+		}))
+	Dashboard.NewClient(&Config.DashboardClient{
+		Name:             "appChat",
+		ConnectionConfig: &Config.SystemgeConnection{},
+		EndpointConfig: &Config.TcpEndpoint{
+			Address: "localhost:60000",
+		},
+	}, app.start, app.systemgeClient.Stop, app.systemgeClient.GetMetrics, app.systemgeClient.GetStatus, Commands.Handlers{
+		"getChatters": app.getChatters,
+		"getRooms":    app.getRooms,
+	})
 	return app
 }
 
-func (app *App) GetCommandHandlers() map[string]Node.CommandHandler {
-	return map[string]Node.CommandHandler{
-		"getChatters": app.getChatters,
-		"getRooms":    app.getRooms,
+func (app *App) start() error {
+	err := app.systemgeClient.Start()
+	if err != nil {
+		return err
 	}
+
+	app.rooms = map[string]*room{}
+	app.chatters = map[string]*chatter{}
+	return nil
 }
 
-func (app *App) getChatters(node *Node.Node, args []string) (string, error) {
+func (app *App) getChatters(args []string) (string, error) {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	if len(args) != 1 {
@@ -44,7 +83,7 @@ func (app *App) getChatters(node *Node.Node, args []string) (string, error) {
 	return resultStr, nil
 }
 
-func (app *App) getRooms(node *Node.Node, args []string) (string, error) {
+func (app *App) getRooms(args []string) (string, error) {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	resultStr := ""

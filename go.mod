@@ -1,11 +1,12 @@
 module SystemgeSampleChat
 
-go 1.22.3
+go 1.23
 
-//replace github.com/neutralusername/Systemge => ../Systemge
+replace github.com/neutralusername/Systemge => ../Systemge
+
+require github.com/neutralusername/Systemge v0.0.0-20240813124809-3cf8adbc570f
+
 require (
-	github.com/gorilla/websocket v1.5.3
-	github.com/neutralusername/Systemge v0.0.0-20240813124809-3cf8adbc570f
+	github.com/gorilla/websocket v1.5.3 // indirect
+	golang.org/x/oauth2 v0.21.0 // indirect
 )
-
-require golang.org/x/oauth2 v0.21.0 // indirect
