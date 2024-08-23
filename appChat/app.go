@@ -25,7 +25,7 @@ func New() *App {
 	app := &App{
 		mutex: sync.Mutex{},
 	}
-	messageHandler := SystemgeMessageHandler.New(
+	messageHandler := SystemgeMessageHandler.NewConcurrentMessageHandler(
 		SystemgeMessageHandler.AsyncMessageHandlers{
 			topics.ADD_MESSAGE: app.addMessage,
 		},
@@ -34,7 +34,6 @@ func New() *App {
 			topics.LEAVE: app.leave,
 		},
 		nil, nil,
-		false,
 	)
 
 	app.systemgeClient = SystemgeClient.New(
