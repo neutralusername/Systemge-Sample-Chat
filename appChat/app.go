@@ -33,6 +33,8 @@ func New() *App {
 			topics.JOIN:  app.join,
 			topics.LEAVE: app.leave,
 		},
+		nil, nil,
+		false,
 	)
 
 	app.systemgeClient = SystemgeClient.New(
