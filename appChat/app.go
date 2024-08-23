@@ -9,6 +9,7 @@ import (
 	"github.com/neutralusername/Systemge/Dashboard"
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/SystemgeClient"
+	"github.com/neutralusername/Systemge/SystemgeConnection"
 	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
 )
 
@@ -35,23 +36,37 @@ func New() *App {
 			},
 			ConnectionConfig: &Config.SystemgeConnection{},
 		},
-		nil, nil,
-		SystemgeMessageHandler.New(SystemgeMessageHandler.AsyncMessageHandlers{
-			topics.ADD_MESSAGE: app.addMessage,
-		}, SystemgeMessageHandler.SyncMessageHandlers{
-			topics.JOIN:  app.join,
-			topics.LEAVE: app.leave,
-		}))
-	Dashboard.NewClient(&Config.DashboardClient{
-		Name:             "appChat",
-		ConnectionConfig: &Config.SystemgeConnection{},
-		EndpointConfig: &Config.TcpEndpoint{
-			Address: "localhost:60000",
+		func(connection *SystemgeConnection.SystemgeConnection) error {
+			connection.StartProcessingLoopSequentially()
+			return nil
 		},
-	}, app.start, app.systemgeClient.Stop, app.systemgeClient.GetMetrics, app.systemgeClient.GetStatus, Commands.Handlers{
-		"getChatters": app.getChatters,
-		"getRooms":    app.getRooms,
-	})
+		func(connection *SystemgeConnection.SystemgeConnection) {
+			connection.StopProcessingLoop()
+		},
+		SystemgeMessageHandler.New(
+			SystemgeMessageHandler.AsyncMessageHandlers{
+				topics.ADD_MESSAGE: app.addMessage,
+			},
+			SystemgeMessageHandler.SyncMessageHandlers{
+				topics.JOIN:  app.join,
+				topics.LEAVE: app.leave,
+			},
+		),
+	)
+	Dashboard.NewClient(
+		&Config.DashboardClient{
+			Name:             "appChat",
+			ConnectionConfig: &Config.SystemgeConnection{},
+			EndpointConfig: &Config.TcpEndpoint{
+				Address: "localhost:60000",
+			},
+		},
+		app.start, app.systemgeClient.Stop, app.systemgeClient.GetMetrics, app.systemgeClient.GetStatus,
+		Commands.Handlers{
+			"getChatters": app.getChatters,
+			"getRooms":    app.getRooms,
+		},
+	)
 	return app
 }
 
