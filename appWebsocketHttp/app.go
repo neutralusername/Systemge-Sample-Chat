@@ -28,6 +28,14 @@ type AppWebsocketHTTP struct {
 
 func New() *AppWebsocketHTTP {
 	app := &AppWebsocketHTTP{}
+
+	messageHandler := SystemgeMessageHandler.New(
+		SystemgeMessageHandler.AsyncMessageHandlers{
+			topics.PROPAGATE_MESSAGE: app.propagateMessage,
+		},
+		SystemgeMessageHandler.SyncMessageHandlers{},
+	)
+
 	app.systemgeServer = SystemgeServer.New(
 		&Config.SystemgeServer{
 			Name: "systemgeServer",
@@ -39,18 +47,12 @@ func New() *AppWebsocketHTTP {
 			ConnectionConfig: &Config.SystemgeConnection{},
 		},
 		func(connection *SystemgeConnection.SystemgeConnection) error {
-			connection.StartProcessingLoopSequentially()
+			connection.StartProcessingLoopSequentially(messageHandler)
 			return nil
 		},
 		func(connection *SystemgeConnection.SystemgeConnection) {
 			connection.StopProcessingLoop()
 		},
-		SystemgeMessageHandler.New(
-			SystemgeMessageHandler.AsyncMessageHandlers{
-				topics.PROPAGATE_MESSAGE: app.propagateMessage,
-			},
-			SystemgeMessageHandler.SyncMessageHandlers{},
-		),
 	)
 	app.websocketServer = WebsocketServer.New(
 		&Config.WebsocketServer{

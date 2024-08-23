@@ -25,6 +25,15 @@ func New() *App {
 	app := &App{
 		mutex: sync.Mutex{},
 	}
+	messageHandler := SystemgeMessageHandler.New(
+		SystemgeMessageHandler.AsyncMessageHandlers{
+			topics.ADD_MESSAGE: app.addMessage,
+		},
+		SystemgeMessageHandler.SyncMessageHandlers{
+			topics.JOIN:  app.join,
+			topics.LEAVE: app.leave,
+		},
+	)
 
 	app.systemgeClient = SystemgeClient.New(
 		&Config.SystemgeClient{
@@ -37,21 +46,12 @@ func New() *App {
 			ConnectionConfig: &Config.SystemgeConnection{},
 		},
 		func(connection *SystemgeConnection.SystemgeConnection) error {
-			connection.StartProcessingLoopSequentially()
+			connection.StartProcessingLoopSequentially(messageHandler)
 			return nil
 		},
 		func(connection *SystemgeConnection.SystemgeConnection) {
 			connection.StopProcessingLoop()
 		},
-		SystemgeMessageHandler.New(
-			SystemgeMessageHandler.AsyncMessageHandlers{
-				topics.ADD_MESSAGE: app.addMessage,
-			},
-			SystemgeMessageHandler.SyncMessageHandlers{
-				topics.JOIN:  app.join,
-				topics.LEAVE: app.leave,
-			},
-		),
 	)
 	Dashboard.NewClient(
 		&Config.DashboardClient{
