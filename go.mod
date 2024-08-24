@@ -2,9 +2,9 @@ module SystemgeSampleChat
 
 go 1.23
 
-replace github.com/neutralusername/Systemge => ../Systemge
+//replace github.com/neutralusername/Systemge => ../Systemge
 
-require github.com/neutralusername/Systemge v0.0.0-20240813124809-3cf8adbc570f
+require github.com/neutralusername/Systemge v0.0.0-20240824115542-2ef9242d3466
 
 require (
 	github.com/gorilla/websocket v1.5.3 // indirect
