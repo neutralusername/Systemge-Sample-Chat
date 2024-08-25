@@ -10,7 +10,6 @@ import (
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/SystemgeClient"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
-	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
 )
 
 type App struct {
@@ -25,11 +24,11 @@ func New() *App {
 	app := &App{
 		mutex: sync.Mutex{},
 	}
-	messageHandler := SystemgeMessageHandler.NewConcurrentMessageHandler(
-		SystemgeMessageHandler.AsyncMessageHandlers{
+	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
+		SystemgeConnection.AsyncMessageHandlers{
 			topics.ADD_MESSAGE: app.addMessage,
 		},
-		SystemgeMessageHandler.SyncMessageHandlers{
+		SystemgeConnection.SyncMessageHandlers{
 			topics.JOIN:  app.join,
 			topics.LEAVE: app.leave,
 		},

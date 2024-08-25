@@ -7,9 +7,10 @@ import (
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/Helpers"
 	"github.com/neutralusername/Systemge/Message"
+	"github.com/neutralusername/Systemge/SystemgeConnection"
 )
 
-func (app *App) addMessage(message *Message.Message) {
+func (app *App) addMessage(connection *SystemgeConnection.SystemgeConnection, message *Message.Message) {
 	app.mutex.Lock()
 	defer app.mutex.Unlock()
 	chatMessage := dto.UnmarshalChatMessage(message.GetPayload())
@@ -25,7 +26,7 @@ func (app *App) addMessage(message *Message.Message) {
 	app.systemgeClient.AsyncMessage(topics.PROPAGATE_MESSAGE, message.GetPayload())
 }
 
-func (app *App) join(message *Message.Message) (string, error) {
+func (app *App) join(connection *SystemgeConnection.SystemgeConnection, message *Message.Message) (string, error) {
 	if err := app.addChatter(message.GetPayload()); err != nil {
 		return "", Error.New("Failed to create chatter", err)
 	}
@@ -35,7 +36,7 @@ func (app *App) join(message *Message.Message) (string, error) {
 	return Helpers.StringsToJsonObjectArray(app.getRoomMessages("lobby")), nil
 }
 
-func (app *App) leave(message *Message.Message) (string, error) {
+func (app *App) leave(connection *SystemgeConnection.SystemgeConnection, message *Message.Message) (string, error) {
 	if err := app.removeFromRoom(message.GetPayload()); err != nil {
 		return "", Error.New("Failed to leave room", err)
 	}

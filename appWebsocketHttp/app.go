@@ -12,7 +12,6 @@ import (
 	"github.com/neutralusername/Systemge/Message"
 	"github.com/neutralusername/Systemge/Status"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
-	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
 	"github.com/neutralusername/Systemge/SystemgeServer"
 	"github.com/neutralusername/Systemge/WebsocketServer"
 )
@@ -29,11 +28,11 @@ type AppWebsocketHTTP struct {
 func New() *AppWebsocketHTTP {
 	app := &AppWebsocketHTTP{}
 
-	messageHandler := SystemgeMessageHandler.NewConcurrentMessageHandler(
-		SystemgeMessageHandler.AsyncMessageHandlers{
+	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
+		SystemgeConnection.AsyncMessageHandlers{
 			topics.PROPAGATE_MESSAGE: app.propagateMessage,
 		},
-		SystemgeMessageHandler.SyncMessageHandlers{},
+		SystemgeConnection.SyncMessageHandlers{},
 		nil, nil,
 	)
 
@@ -130,11 +129,7 @@ func (app *AppWebsocketHTTP) stop() error {
 	return nil
 }
 
-func (app *AppWebsocketHTTP) propagateMessage(message *Message.Message) {
-	app.websocketServer.Broadcast(message)
-}
-
-func (app *AppWebsocketHTTP) WebsocketPropagate(message *Message.Message) {
+func (app *AppWebsocketHTTP) propagateMessage(connection *SystemgeConnection.SystemgeConnection, message *Message.Message) {
 	app.websocketServer.Broadcast(message)
 }
 
