@@ -3,16 +3,18 @@ package main
 import (
 	"SystemgeSampleChat/appChat"
 	"SystemgeSampleChat/appWebsocketHttp"
+	"SystemgeSampleChat/topics"
 	"time"
 
 	"github.com/neutralusername/Systemge/Config"
 	"github.com/neutralusername/Systemge/Dashboard"
+	"github.com/neutralusername/Systemge/MessageBroker"
 )
 
 const LOGGER_PATH = "logs.log"
 
 func main() {
-	Dashboard.NewServer(&Config.DashboardServer{
+	if Dashboard.NewServer(&Config.DashboardServer{
 		HTTPServerConfig: &Config.HTTPServer{
 			TcpListenerConfig: &Config.TcpListener{
 				Port: 8081,
@@ -38,8 +40,33 @@ func main() {
 		GoroutineUpdateIntervalMs: 1000,
 		StatusUpdateIntervalMs:    1000,
 		MetricsUpdateIntervalMs:   1000,
-	})
+	}).Start() != nil {
+		panic("Dashboard server failed to start")
+	}
+	if MessageBroker.NewMessageBrokerServer(&Config.MessageBrokerServer{
+		SystemgeServerConfig: &Config.SystemgeServer{
+			Name: "messageBrokerServer",
+			ListenerConfig: &Config.SystemgeListener{
+				TcpListenerConfig: &Config.TcpListener{
+					Port: 60001,
+				},
+			},
+			ConnectionConfig: &Config.SystemgeConnection{},
+		},
+		AsyncTopics: []string{topics.PROPAGATE_MESSAGE, topics.ADD_MESSAGE},
+		SyncTopics:  []string{topics.JOIN, topics.LEAVE},
+		DashboardClientConfig: &Config.DashboardClient{
+			Name:             "messageBrokerServer",
+			ConnectionConfig: &Config.SystemgeConnection{},
+			EndpointConfig: &Config.TcpEndpoint{
+				Address: "localhost:60000",
+			},
+		},
+	}).Start() != nil {
+		panic("MessageBroker server failed to start")
+	}
 	appWebsocketHttp.New()
+
 	appChat.New()
 	<-make(chan time.Time)
 }

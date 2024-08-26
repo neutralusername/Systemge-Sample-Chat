@@ -3,57 +3,25 @@ package appWebsocketHttp
 import (
 	"SystemgeSampleChat/dto"
 	"SystemgeSampleChat/topics"
-	"sync"
 
 	"github.com/neutralusername/Systemge/Config"
-	"github.com/neutralusername/Systemge/Dashboard"
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/HTTPServer"
 	"github.com/neutralusername/Systemge/Message"
-	"github.com/neutralusername/Systemge/Status"
+	"github.com/neutralusername/Systemge/MessageBroker"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
-	"github.com/neutralusername/Systemge/SystemgeServer"
 	"github.com/neutralusername/Systemge/WebsocketServer"
 )
 
 type AppWebsocketHTTP struct {
-	status      int
-	statusMutex sync.Mutex
-
-	systemgeServer  *SystemgeServer.SystemgeServer
-	websocketServer *WebsocketServer.WebsocketServer
-	httpServer      *HTTPServer.HTTPServer
+	messageBrokerClient *SystemgeConnection.SystemgeConnection
+	websocketServer     *WebsocketServer.WebsocketServer
+	httpServer          *HTTPServer.HTTPServer
 }
 
 func New() *AppWebsocketHTTP {
 	app := &AppWebsocketHTTP{}
 
-	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
-		SystemgeConnection.AsyncMessageHandlers{
-			topics.PROPAGATE_MESSAGE: app.propagateMessage,
-		},
-		SystemgeConnection.SyncMessageHandlers{},
-		nil, nil,
-	)
-
-	app.systemgeServer = SystemgeServer.New(
-		&Config.SystemgeServer{
-			Name: "systemgeServer",
-			ListenerConfig: &Config.SystemgeListener{
-				TcpListenerConfig: &Config.TcpListener{
-					Port: 60001,
-				},
-			},
-			ConnectionConfig: &Config.SystemgeConnection{},
-		},
-		func(connection *SystemgeConnection.SystemgeConnection) error {
-			connection.StartProcessingLoopSequentially(messageHandler)
-			return nil
-		},
-		func(connection *SystemgeConnection.SystemgeConnection) {
-			connection.StopProcessingLoop()
-		},
-	)
 	app.websocketServer = WebsocketServer.New(
 		&Config.WebsocketServer{
 			ClientWatchdogTimeoutMs: 1000 * 60,
@@ -75,58 +43,46 @@ func New() *AppWebsocketHTTP {
 		},
 		HTTPServer.Handlers{
 			"/": HTTPServer.SendDirectory("../frontend"),
-		})
-	Dashboard.NewClient(
-		&Config.DashboardClient{
+		},
+	)
+
+	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
+		SystemgeConnection.AsyncMessageHandlers{
+			topics.PROPAGATE_MESSAGE: app.propagateMessage,
+		},
+		SystemgeConnection.SyncMessageHandlers{},
+		nil, nil,
+	)
+
+	messageBrokerClient, err := MessageBroker.NewMessageBrokerClient(&Config.MessageBrokerClient{
+		Name:             "appWebsocketHttp",
+		ConnectionConfig: &Config.SystemgeConnection{},
+		EndpointConfig: &Config.TcpEndpoint{
+			Address: "localhost:60001",
+		},
+		DashboardClientConfig: &Config.DashboardClient{
 			Name:             "appWebsocketHttp",
 			ConnectionConfig: &Config.SystemgeConnection{},
 			EndpointConfig: &Config.TcpEndpoint{
 				Address: "localhost:60000",
 			},
 		},
-		app.start, app.stop, app.systemgeServer.GetMetrics, app.getStatus,
-		nil,
-	)
-	return app
-}
-
-func (app *AppWebsocketHTTP) getStatus() int {
-	return app.status
-}
-
-func (app *AppWebsocketHTTP) start() error {
-	app.statusMutex.Lock()
-	defer app.statusMutex.Unlock()
-	if app.status != Status.STOPPED {
-		return Error.New("App already started", nil)
+		AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
+	}, messageHandler, nil)
+	if err != nil {
+		panic(err)
 	}
-	if err := app.systemgeServer.Start(); err != nil {
-		return Error.New("Failed to start systemgeServer", err)
-	}
+
+	app.messageBrokerClient = messageBrokerClient
+
 	if err := app.websocketServer.Start(); err != nil {
-		app.systemgeServer.Stop()
-		return Error.New("Failed to start websocketServer", err)
+		panic(err)
 	}
 	if err := app.httpServer.Start(); err != nil {
-		app.systemgeServer.Stop()
-		app.websocketServer.Stop()
-		return Error.New("Failed to start httpServer", err)
+		panic(err)
 	}
-	app.status = Status.STARTED
-	return nil
-}
 
-func (app *AppWebsocketHTTP) stop() error {
-	app.statusMutex.Lock()
-	defer app.statusMutex.Unlock()
-	if app.status != Status.STARTED {
-		return Error.New("App not started", nil)
-	}
-	app.httpServer.Stop()
-	app.websocketServer.Stop()
-	app.systemgeServer.Stop()
-	app.status = Status.STOPPED
-	return nil
+	return app
 }
 
 func (app *AppWebsocketHTTP) propagateMessage(connection *SystemgeConnection.SystemgeConnection, message *Message.Message) {
@@ -134,7 +90,7 @@ func (app *AppWebsocketHTTP) propagateMessage(connection *SystemgeConnection.Sys
 }
 
 func (app *AppWebsocketHTTP) OnConnectHandler(websocketClient *WebsocketServer.WebsocketClient) error {
-	responseChannel, err := app.systemgeServer.SyncRequest(topics.JOIN, websocketClient.GetId())
+	responseChannel, err := app.messageBrokerClient.SyncRequest(topics.JOIN, websocketClient.GetId())
 	if err != nil {
 		return Error.New("Failed to join room", err)
 	}
@@ -147,14 +103,14 @@ func (app *AppWebsocketHTTP) OnConnectHandler(websocketClient *WebsocketServer.W
 }
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(websocketClient *WebsocketServer.WebsocketClient) {
-	_, err := app.systemgeServer.SyncRequest(topics.LEAVE, websocketClient.GetId())
+	_, err := app.messageBrokerClient.SyncRequest(topics.LEAVE, websocketClient.GetId())
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (app *AppWebsocketHTTP) addMessage(websocketClient *WebsocketServer.WebsocketClient, message *Message.Message) error {
-	err := app.systemgeServer.AsyncMessage(topics.ADD_MESSAGE, dto.NewChatMessage(websocketClient.GetId(), message.GetPayload()).Marshal())
+	err := app.messageBrokerClient.AsyncMessage(topics.ADD_MESSAGE, dto.NewChatMessage(websocketClient.GetId(), message.GetPayload()).Marshal())
 	if err != nil {
 		panic(err)
 	}

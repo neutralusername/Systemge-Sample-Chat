@@ -23,7 +23,7 @@ func (app *App) addMessage(connection *SystemgeConnection.SystemgeConnection, me
 		return
 	}
 	room.addMessage(chatMessage)
-	app.systemgeClient.AsyncMessage(topics.PROPAGATE_MESSAGE, message.GetPayload())
+	app.messageBrokerClient.AsyncMessage(topics.PROPAGATE_MESSAGE, message.GetPayload())
 }
 
 func (app *App) join(connection *SystemgeConnection.SystemgeConnection, message *Message.Message) (string, error) {

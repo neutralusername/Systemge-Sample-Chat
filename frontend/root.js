@@ -21,7 +21,7 @@ export class root extends React.Component {
                 switch (message.topic) {
                     case "join":
                         this.state.setStateRoot({
-                            messages: JSON.parse(message.payload),
+                            messages: JSON.parse(JSON.parse(message.payload)[0].payload),
                         });
                         break;
                     case "propagateMessage":

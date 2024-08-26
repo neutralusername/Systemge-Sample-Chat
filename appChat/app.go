@@ -6,9 +6,8 @@ import (
 
 	"github.com/neutralusername/Systemge/Commands"
 	"github.com/neutralusername/Systemge/Config"
-	"github.com/neutralusername/Systemge/Dashboard"
 	"github.com/neutralusername/Systemge/Error"
-	"github.com/neutralusername/Systemge/SystemgeClient"
+	"github.com/neutralusername/Systemge/MessageBroker"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
 )
 
@@ -17,68 +16,55 @@ type App struct {
 	chatters map[string]*chatter //chatterId -> chatter
 	mutex    sync.Mutex
 
-	systemgeClient *SystemgeClient.SystemgeClient
+	messageBrokerClient *SystemgeConnection.SystemgeConnection
 }
 
 func New() *App {
 	app := &App{
 		mutex: sync.Mutex{},
 	}
-	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
-		SystemgeConnection.AsyncMessageHandlers{
-			topics.ADD_MESSAGE: app.addMessage,
-		},
-		SystemgeConnection.SyncMessageHandlers{
-			topics.JOIN:  app.join,
-			topics.LEAVE: app.leave,
-		},
-		nil, nil,
-	)
 
-	app.systemgeClient = SystemgeClient.New(
-		&Config.SystemgeClient{
-			Name: "systemgeClient",
-			EndpointConfigs: []*Config.TcpEndpoint{
-				{
-					Address: "localhost:60001",
-				},
-			},
-			ConnectionConfig: &Config.SystemgeConnection{},
-		},
-		func(connection *SystemgeConnection.SystemgeConnection) error {
-			connection.StartProcessingLoopSequentially(messageHandler)
-			return nil
-		},
-		func(connection *SystemgeConnection.SystemgeConnection) {
-			connection.StopProcessingLoop()
-		},
-	)
-	Dashboard.NewClient(
-		&Config.DashboardClient{
+	messageBrokerClient, err := MessageBroker.NewMessageBrokerClient(
+		&Config.MessageBrokerClient{
 			Name:             "appChat",
 			ConnectionConfig: &Config.SystemgeConnection{},
 			EndpointConfig: &Config.TcpEndpoint{
-				Address: "localhost:60000",
+				Address: "localhost:60001",
 			},
+			DashboardClientConfig: &Config.DashboardClient{
+				Name:             "appChat",
+				ConnectionConfig: &Config.SystemgeConnection{},
+				EndpointConfig: &Config.TcpEndpoint{
+					Address: "localhost:60000",
+				},
+			},
+			AsyncTopics: []string{topics.ADD_MESSAGE},
+			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
 		},
-		app.start, app.systemgeClient.Stop, app.systemgeClient.GetMetrics, app.systemgeClient.GetStatus,
+		SystemgeConnection.NewConcurrentMessageHandler(
+			SystemgeConnection.AsyncMessageHandlers{
+				topics.ADD_MESSAGE: app.addMessage,
+			},
+			SystemgeConnection.SyncMessageHandlers{
+				topics.JOIN:  app.join,
+				topics.LEAVE: app.leave,
+			},
+			nil, nil,
+		),
 		Commands.Handlers{
 			"getChatters": app.getChatters,
 			"getRooms":    app.getRooms,
 		},
 	)
-	return app
-}
-
-func (app *App) start() error {
-	err := app.systemgeClient.Start()
 	if err != nil {
-		return err
+		panic(err)
 	}
+	app.messageBrokerClient = messageBrokerClient
 
 	app.rooms = map[string]*room{}
 	app.chatters = map[string]*chatter{}
-	return nil
+
+	return app
 }
 
 func (app *App) getChatters(args []string) (string, error) {
