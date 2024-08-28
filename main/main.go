@@ -14,55 +14,59 @@ import (
 const LOGGER_PATH = "logs.log"
 
 func main() {
-	if Dashboard.NewServer(&Config.DashboardServer{
-		HTTPServerConfig: &Config.HTTPServer{
-			TcpListenerConfig: &Config.TcpListener{
-				Port: 8081,
-			},
-		},
-		WebsocketServerConfig: &Config.WebsocketServer{
-			Pattern:                 "/ws",
-			ClientWatchdogTimeoutMs: 1000 * 60,
-			TcpListenerConfig: &Config.TcpListener{
-				Port: 8444,
-			},
-		},
-		SystemgeServerConfig: &Config.SystemgeServer{
-			Name: "dashboardServer",
-			ListenerConfig: &Config.SystemgeListener{
+	if Dashboard.NewServer(
+		&Config.DashboardServer{
+			HTTPServerConfig: &Config.HTTPServer{
 				TcpListenerConfig: &Config.TcpListener{
-					Port: 60000,
+					Port: 8081,
 				},
 			},
-			ConnectionConfig: &Config.SystemgeConnection{},
+			WebsocketServerConfig: &Config.WebsocketServer{
+				Pattern:                 "/ws",
+				ClientWatchdogTimeoutMs: 1000 * 60,
+				TcpListenerConfig: &Config.TcpListener{
+					Port: 8444,
+				},
+			},
+			SystemgeServerConfig: &Config.SystemgeServer{
+				Name: "dashboardServer",
+				ListenerConfig: &Config.SystemgeListener{
+					TcpListenerConfig: &Config.TcpListener{
+						Port: 60000,
+					},
+				},
+				ConnectionConfig: &Config.SystemgeConnection{},
+			},
+			HeapUpdateIntervalMs:      1000,
+			GoroutineUpdateIntervalMs: 1000,
+			StatusUpdateIntervalMs:    1000,
+			MetricsUpdateIntervalMs:   1000,
 		},
-		HeapUpdateIntervalMs:      1000,
-		GoroutineUpdateIntervalMs: 1000,
-		StatusUpdateIntervalMs:    1000,
-		MetricsUpdateIntervalMs:   1000,
-	}).Start() != nil {
+	).Start() != nil {
 		panic("Dashboard server failed to start")
 	}
-	if MessageBroker.NewMessageBrokerServer(&Config.MessageBrokerServer{
-		SystemgeServerConfig: &Config.SystemgeServer{
-			Name: "messageBrokerServer",
-			ListenerConfig: &Config.SystemgeListener{
-				TcpListenerConfig: &Config.TcpListener{
-					Port: 60001,
+	if MessageBroker.NewMessageBrokerServer(
+		&Config.MessageBrokerServer{
+			SystemgeServerConfig: &Config.SystemgeServer{
+				Name: "messageBrokerServer",
+				ListenerConfig: &Config.SystemgeListener{
+					TcpListenerConfig: &Config.TcpListener{
+						Port: 60001,
+					},
+				},
+				ConnectionConfig: &Config.SystemgeConnection{},
+			},
+			AsyncTopics: []string{topics.PROPAGATE_MESSAGE, topics.ADD_MESSAGE},
+			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
+			DashboardClientConfig: &Config.DashboardClient{
+				Name:             "messageBrokerServer",
+				ConnectionConfig: &Config.SystemgeConnection{},
+				EndpointConfig: &Config.TcpEndpoint{
+					Address: "localhost:60000",
 				},
 			},
-			ConnectionConfig: &Config.SystemgeConnection{},
 		},
-		AsyncTopics: []string{topics.PROPAGATE_MESSAGE, topics.ADD_MESSAGE},
-		SyncTopics:  []string{topics.JOIN, topics.LEAVE},
-		DashboardClientConfig: &Config.DashboardClient{
-			Name:             "messageBrokerServer",
-			ConnectionConfig: &Config.SystemgeConnection{},
-			EndpointConfig: &Config.TcpEndpoint{
-				Address: "localhost:60000",
-			},
-		},
-	}).Start() != nil {
+	).Start() != nil {
 		panic("MessageBroker server failed to start")
 	}
 	appWebsocketHttp.New()

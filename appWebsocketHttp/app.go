@@ -54,21 +54,24 @@ func New() *AppWebsocketHTTP {
 		nil, nil,
 	)
 
-	messageBrokerClient, err := MessageBroker.NewMessageBrokerClient(&Config.MessageBrokerClient{
-		Name:             "appWebsocketHttp",
-		ConnectionConfig: &Config.SystemgeConnection{},
-		EndpointConfig: &Config.TcpEndpoint{
-			Address: "localhost:60001",
-		},
-		DashboardClientConfig: &Config.DashboardClient{
+	messageBrokerClient, err := MessageBroker.NewMessageBrokerClient(
+		&Config.MessageBrokerClient{
 			Name:             "appWebsocketHttp",
 			ConnectionConfig: &Config.SystemgeConnection{},
 			EndpointConfig: &Config.TcpEndpoint{
-				Address: "localhost:60000",
+				Address: "localhost:60001",
 			},
+			DashboardClientConfig: &Config.DashboardClient{
+				Name:             "appWebsocketHttp",
+				ConnectionConfig: &Config.SystemgeConnection{},
+				EndpointConfig: &Config.TcpEndpoint{
+					Address: "localhost:60000",
+				},
+			},
+			AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
 		},
-		AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
-	}, messageHandler, nil)
+		messageHandler, nil,
+	)
 	if err != nil {
 		panic(err)
 	}
