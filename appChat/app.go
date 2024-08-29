@@ -38,6 +38,8 @@ func New() *App {
 					Address: "localhost:60000",
 				},
 			},
+			AsyncTopics: []string{topics.ADD_MESSAGE},
+			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
 		},
 		SystemgeConnection.NewConcurrentMessageHandler(
 			SystemgeConnection.AsyncMessageHandlers{
