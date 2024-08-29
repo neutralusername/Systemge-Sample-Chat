@@ -68,7 +68,6 @@ func New() *AppWebsocketHTTP {
 					Address: "localhost:60000",
 				},
 			},
-			AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
 		},
 		messageHandler, nil,
 	)
