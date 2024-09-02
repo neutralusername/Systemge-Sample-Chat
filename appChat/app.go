@@ -4,10 +4,10 @@ import (
 	"SystemgeSampleChat/topics"
 	"sync"
 
+	"github.com/neutralusername/Systemge/BrokerClient"
 	"github.com/neutralusername/Systemge/Commands"
 	"github.com/neutralusername/Systemge/Config"
 	"github.com/neutralusername/Systemge/Error"
-	"github.com/neutralusername/Systemge/MessageBroker"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
 )
 
@@ -16,7 +16,7 @@ type App struct {
 	chatters map[string]*chatter //chatterId -> chatter
 	mutex    sync.Mutex
 
-	messageBrokerClient *SystemgeConnection.SystemgeConnection
+	messageBrokerClient *BrokerClient.Client
 }
 
 func New() *App {
@@ -24,17 +24,13 @@ func New() *App {
 		mutex: sync.Mutex{},
 	}
 
-	messageBrokerClient, err := MessageBroker.NewMessageBrokerClient(
+	messageBrokerClient := BrokerClient.New("appChat",
 		&Config.MessageBrokerClient{
-			Name:             "appChat",
-			ConnectionConfig: &Config.SystemgeConnection{},
-			EndpointConfig: &Config.TcpEndpoint{
-				Address: "localhost:60001",
-			},
+			ConnectionConfig:      &Config.TcpConnection{},
+			ResolverClientConfigs: []*Config.TcpClient{},
 			DashboardClientConfig: &Config.DashboardClient{
-				Name:             "appChat",
-				ConnectionConfig: &Config.SystemgeConnection{},
-				EndpointConfig: &Config.TcpEndpoint{
+				ConnectionConfig: &Config.TcpConnection{},
+				ClientConfig: &Config.TcpClient{
 					Address: "localhost:60000",
 				},
 			},
@@ -56,9 +52,9 @@ func New() *App {
 			"getRooms":    app.getRooms,
 		},
 	)
-	if err != nil {
-		panic(err)
-	}
+
+	start
+
 	app.messageBrokerClient = messageBrokerClient
 
 	app.rooms = map[string]*room{}

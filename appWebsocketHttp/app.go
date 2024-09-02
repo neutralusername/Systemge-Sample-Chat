@@ -4,17 +4,17 @@ import (
 	"SystemgeSampleChat/dto"
 	"SystemgeSampleChat/topics"
 
+	"github.com/neutralusername/Systemge/BrokerClient"
 	"github.com/neutralusername/Systemge/Config"
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/HTTPServer"
 	"github.com/neutralusername/Systemge/Message"
-	"github.com/neutralusername/Systemge/MessageBroker"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
 	"github.com/neutralusername/Systemge/WebsocketServer"
 )
 
 type AppWebsocketHTTP struct {
-	messageBrokerClient *SystemgeConnection.SystemgeConnection
+	messageBrokerClient *BrokerClient.Client
 	websocketServer     *WebsocketServer.WebsocketServer
 	httpServer          *HTTPServer.HTTPServer
 }
@@ -22,11 +22,11 @@ type AppWebsocketHTTP struct {
 func New() *AppWebsocketHTTP {
 	app := &AppWebsocketHTTP{}
 
-	app.websocketServer = WebsocketServer.New(
+	app.websocketServer = WebsocketServer.New("appWebsocketHttp",
 		&Config.WebsocketServer{
 			ClientWatchdogTimeoutMs: 1000 * 60,
 			Pattern:                 "/ws",
-			TcpListenerConfig: &Config.TcpListener{
+			TcpServerConfig: &Config.TcpServer{
 				Port: 8443,
 			},
 		},
@@ -35,9 +35,9 @@ func New() *AppWebsocketHTTP {
 		},
 		app.OnConnectHandler, app.OnDisconnectHandler,
 	)
-	app.httpServer = HTTPServer.New(
+	app.httpServer = HTTPServer.New("appWebsocketHttp",
 		&Config.HTTPServer{
-			TcpListenerConfig: &Config.TcpListener{
+			TcpServerConfig: &Config.TcpServer{
 				Port: 8080,
 			},
 		},
@@ -54,17 +54,13 @@ func New() *AppWebsocketHTTP {
 		nil, nil,
 	)
 
-	messageBrokerClient, err := MessageBroker.NewMessageBrokerClient(
+	messageBrokerClient := BrokerClient.New("appWebsocketHttp",
 		&Config.MessageBrokerClient{
-			Name:             "appWebsocketHttp",
-			ConnectionConfig: &Config.SystemgeConnection{},
-			EndpointConfig: &Config.TcpEndpoint{
-				Address: "localhost:60001",
-			},
+			ConnectionConfig:      &Config.TcpConnection{},
+			ResolverClientConfigs: []*Config.TcpClient{},
 			DashboardClientConfig: &Config.DashboardClient{
-				Name:             "appWebsocketHttp",
-				ConnectionConfig: &Config.SystemgeConnection{},
-				EndpointConfig: &Config.TcpEndpoint{
+				ConnectionConfig: &Config.TcpConnection{},
+				ClientConfig: &Config.TcpClient{
 					Address: "localhost:60000",
 				},
 			},
@@ -72,9 +68,8 @@ func New() *AppWebsocketHTTP {
 		},
 		messageHandler, nil,
 	)
-	if err != nil {
-		panic(err)
-	}
+
+	start
 
 	app.messageBrokerClient = messageBrokerClient
 
@@ -88,34 +83,25 @@ func New() *AppWebsocketHTTP {
 	return app
 }
 
-func (app *AppWebsocketHTTP) propagateMessage(connection *SystemgeConnection.SystemgeConnection, message *Message.Message) {
+func (app *AppWebsocketHTTP) propagateMessage(connection SystemgeConnection.SystemgeConnection, message *Message.Message) {
 	app.websocketServer.Broadcast(message)
 }
 
 func (app *AppWebsocketHTTP) OnConnectHandler(websocketClient *WebsocketServer.WebsocketClient) error {
-	responseChannel, err := app.messageBrokerClient.SyncRequest(topics.JOIN, websocketClient.GetId())
-	if err != nil {
-		return Error.New("Failed to join room", err)
+	responses := app.messageBrokerClient.SyncRequest(topics.JOIN, websocketClient.GetId())
+	if len(responses) == 0 {
+		return Error.New("Failed to receive response", nil)
 	}
-	response := <-responseChannel
-	if response == nil {
-		return Error.New("Failed to receive response", err)
-	}
+	response := responses[0]
 	websocketClient.Send(Message.NewAsync("join", response.GetPayload()).Serialize())
 	return nil
 }
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(websocketClient *WebsocketServer.WebsocketClient) {
-	_, err := app.messageBrokerClient.SyncRequest(topics.LEAVE, websocketClient.GetId())
-	if err != nil {
-		panic(err)
-	}
+	app.messageBrokerClient.SyncRequest(topics.LEAVE, websocketClient.GetId())
 }
 
 func (app *AppWebsocketHTTP) addMessage(websocketClient *WebsocketServer.WebsocketClient, message *Message.Message) error {
-	err := app.messageBrokerClient.AsyncMessage(topics.ADD_MESSAGE, dto.NewChatMessage(websocketClient.GetId(), message.GetPayload()).Marshal())
-	if err != nil {
-		panic(err)
-	}
+	app.messageBrokerClient.AsyncMessage(topics.ADD_MESSAGE, dto.NewChatMessage(websocketClient.GetId(), message.GetPayload()).Marshal())
 	return nil
 }
