@@ -42,6 +42,7 @@ func main() {
 			GoroutineUpdateIntervalMs: 1000,
 			StatusUpdateIntervalMs:    1000,
 			MetricsUpdateIntervalMs:   1000,
+			MaxChartEntries:           100,
 		},
 	).Start(); err != nil {
 		panic(Error.New("Dashboard server failed to start", err))
