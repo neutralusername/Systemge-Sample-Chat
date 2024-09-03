@@ -24,14 +24,19 @@ func New() *App {
 		mutex: sync.Mutex{},
 	}
 
-	messageBrokerClient := BrokerClient.New("appChat",
+	app.messageBrokerClient = BrokerClient.New("appChat",
 		&Config.MessageBrokerClient{
-			ConnectionConfig:      &Config.TcpConnection{},
-			ResolverClientConfigs: []*Config.TcpClient{},
+			ConnectionConfig:         &Config.TcpConnection{},
+			ResolverConnectionConfig: &Config.TcpConnection{},
 			DashboardClientConfig: &Config.DashboardClient{
 				ConnectionConfig: &Config.TcpConnection{},
 				ClientConfig: &Config.TcpClient{
 					Address: "localhost:60000",
+				},
+			},
+			ResolverClientConfigs: []*Config.TcpClient{
+				{
+					Address: "localhost:60001",
 				},
 			},
 			AsyncTopics: []string{topics.ADD_MESSAGE},
@@ -53,9 +58,9 @@ func New() *App {
 		},
 	)
 
-	start
-
-	app.messageBrokerClient = messageBrokerClient
+	if err := app.messageBrokerClient.Start(); err != nil {
+		panic(Error.New("MessageBroker client failed to start", err))
+	}
 
 	app.rooms = map[string]*room{}
 	app.chatters = map[string]*chatter{}

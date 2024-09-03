@@ -16,7 +16,7 @@ import (
 const LOGGER_PATH = "logs.log"
 
 func main() {
-	if Dashboard.NewServer("DasbhboardServer",
+	if err := Dashboard.NewServer("DasbhboardServer",
 		&Config.DashboardServer{
 			HTTPServerConfig: &Config.HTTPServer{
 				TcpServerConfig: &Config.TcpServer{
@@ -43,15 +43,44 @@ func main() {
 			StatusUpdateIntervalMs:    1000,
 			MetricsUpdateIntervalMs:   1000,
 		},
-	).Start() != nil {
-		panic("Dashboard server failed to start")
+	).Start(); err != nil {
+		panic(Error.New("Dashboard server failed to start", err))
 	}
 	if err := BrokerResolver.New("brokerResolver",
 		&Config.MessageBrokerResolver{
-			SystemgeServerConfig: &Config.SystemgeServer{},
+			SystemgeServerConfig: &Config.SystemgeServer{
+				ListenerConfig: &Config.TcpListener{
+					TcpServerConfig: &Config.TcpServer{
+						Port: 60001,
+					},
+				},
+				ConnectionConfig: &Config.TcpConnection{},
+			},
+			DashboardClientConfig: &Config.DashboardClient{
+				ConnectionConfig: &Config.TcpConnection{},
+				ClientConfig: &Config.TcpClient{
+					Address: "localhost:60000",
+				},
+			},
+			AsyncTopicClientConfigs: map[string]*Config.TcpClient{
+				topics.PROPAGATE_MESSAGE: {
+					Address: "localhost:60002",
+				},
+				topics.ADD_MESSAGE: {
+					Address: "localhost:60002",
+				},
+			},
+			SyncTopicClientConfigs: map[string]*Config.TcpClient{
+				topics.JOIN: {
+					Address: "localhost:60002",
+				},
+				topics.LEAVE: {
+					Address: "localhost:60002",
+				},
+			},
 		},
-	); err != nil {
-		panic("MessageBroker resolver failed to start")
+	).Start(); err != nil {
+		panic(Error.New("MessageBroker resolver failed to start", err))
 	}
 
 	if err := BrokerServer.New("brokerServer",
@@ -59,7 +88,7 @@ func main() {
 			SystemgeServerConfig: &Config.SystemgeServer{
 				ListenerConfig: &Config.TcpListener{
 					TcpServerConfig: &Config.TcpServer{
-						Port: 60001,
+						Port: 60002,
 					},
 				},
 				ConnectionConfig: &Config.TcpConnection{},

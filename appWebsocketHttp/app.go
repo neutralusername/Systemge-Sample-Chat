@@ -54,14 +54,19 @@ func New() *AppWebsocketHTTP {
 		nil, nil,
 	)
 
-	messageBrokerClient := BrokerClient.New("appWebsocketHttp",
+	app.messageBrokerClient = BrokerClient.New("appWebsocketHttp",
 		&Config.MessageBrokerClient{
-			ConnectionConfig:      &Config.TcpConnection{},
-			ResolverClientConfigs: []*Config.TcpClient{},
+			ConnectionConfig:         &Config.TcpConnection{},
+			ResolverConnectionConfig: &Config.TcpConnection{},
 			DashboardClientConfig: &Config.DashboardClient{
 				ConnectionConfig: &Config.TcpConnection{},
 				ClientConfig: &Config.TcpClient{
 					Address: "localhost:60000",
+				},
+			},
+			ResolverClientConfigs: []*Config.TcpClient{
+				{
+					Address: "localhost:60001",
 				},
 			},
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
@@ -69,10 +74,9 @@ func New() *AppWebsocketHTTP {
 		messageHandler, nil,
 	)
 
-	start
-
-	app.messageBrokerClient = messageBrokerClient
-
+	if err := app.messageBrokerClient.Start(); err != nil {
+		panic(err)
+	}
 	if err := app.websocketServer.Start(); err != nil {
 		panic(err)
 	}
