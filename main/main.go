@@ -33,12 +33,12 @@ func main() {
 				},
 			},
 			SystemgeServerConfig: &Config.SystemgeServer{
-				ListenerConfig: &Config.TcpListener{
+				ListenerConfig: &Config.TcpSystemgeListener{
 					TcpServerConfig: &Config.TcpServer{
 						Port: 60000,
 					},
 				},
-				ConnectionConfig: &Config.TcpConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{},
 			},
 			HeapUpdateIntervalMs:      1000,
 			GoroutineUpdateIntervalMs: 1000,
@@ -52,15 +52,15 @@ func main() {
 	if err := BrokerResolver.New("brokerResolver",
 		&Config.MessageBrokerResolver{
 			SystemgeServerConfig: &Config.SystemgeServer{
-				ListenerConfig: &Config.TcpListener{
+				ListenerConfig: &Config.TcpSystemgeListener{
 					TcpServerConfig: &Config.TcpServer{
 						Port: 60001,
 					},
 				},
-				ConnectionConfig: &Config.TcpConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{},
 			},
 			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{},
 				ClientConfig: &Config.TcpClient{
 					Address: "[::1]:60000",
 				},
@@ -89,17 +89,17 @@ func main() {
 	if err := BrokerServer.New("brokerServer",
 		&Config.MessageBrokerServer{
 			SystemgeServerConfig: &Config.SystemgeServer{
-				ListenerConfig: &Config.TcpListener{
+				ListenerConfig: &Config.TcpSystemgeListener{
 					TcpServerConfig: &Config.TcpServer{
 						Port: 60002,
 					},
 				},
-				ConnectionConfig: &Config.TcpConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{},
 			},
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE, topics.ADD_MESSAGE},
 			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
 			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{},
 				ClientConfig: &Config.TcpClient{
 					Address: "[::1]:60000",
 				},

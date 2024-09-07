@@ -56,10 +56,10 @@ func New() *AppWebsocketHTTP {
 
 	app.messageBrokerClient = BrokerClient.New("appWebsocketHttp",
 		&Config.MessageBrokerClient{
-			ConnectionConfig:         &Config.TcpConnection{},
-			ResolverConnectionConfig: &Config.TcpConnection{},
+			ConnectionConfig:         &Config.TcpSystemgeConnection{},
+			ResolverConnectionConfig: &Config.TcpSystemgeConnection{},
 			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{},
 				ClientConfig: &Config.TcpClient{
 					Address: "localhost:60000",
 				},

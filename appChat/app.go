@@ -26,10 +26,10 @@ func New() *App {
 
 	app.messageBrokerClient = BrokerClient.New("appChat",
 		&Config.MessageBrokerClient{
-			ConnectionConfig:         &Config.TcpConnection{},
-			ResolverConnectionConfig: &Config.TcpConnection{},
+			ConnectionConfig:         &Config.TcpSystemgeConnection{},
+			ResolverConnectionConfig: &Config.TcpSystemgeConnection{},
 			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{},
 				ClientConfig: &Config.TcpClient{
 					Address: "localhost:60000",
 				},
