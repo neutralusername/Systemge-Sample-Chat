@@ -11,11 +11,13 @@ import (
 	"github.com/neutralusername/Systemge/Config"
 	"github.com/neutralusername/Systemge/Dashboard"
 	"github.com/neutralusername/Systemge/Error"
+	"github.com/neutralusername/Systemge/Helpers"
 )
 
 const LOGGER_PATH = "logs.log"
 
 func main() {
+	Helpers.StartPprof()
 	if err := Dashboard.NewServer("DasbhboardServer",
 		&Config.DashboardServer{
 			HTTPServerConfig: &Config.HTTPServer{
@@ -25,7 +27,7 @@ func main() {
 			},
 			WebsocketServerConfig: &Config.WebsocketServer{
 				Pattern:                 "/ws",
-				ClientWatchdogTimeoutMs: 1000 * 60,
+				ClientWatchdogTimeoutMs: 1000 * 60 * 10,
 				TcpServerConfig: &Config.TcpServer{
 					Port: 8444,
 				},
@@ -60,23 +62,23 @@ func main() {
 			DashboardClientConfig: &Config.DashboardClient{
 				ConnectionConfig: &Config.TcpConnection{},
 				ClientConfig: &Config.TcpClient{
-					Address: "localhost:60000",
+					Address: "[::1]:60000",
 				},
 			},
 			AsyncTopicClientConfigs: map[string]*Config.TcpClient{
 				topics.PROPAGATE_MESSAGE: {
-					Address: "localhost:60002",
+					Address: "[::1]:60002",
 				},
 				topics.ADD_MESSAGE: {
-					Address: "localhost:60002",
+					Address: "[::1]:60002",
 				},
 			},
 			SyncTopicClientConfigs: map[string]*Config.TcpClient{
 				topics.JOIN: {
-					Address: "localhost:60002",
+					Address: "[::1]:60002",
 				},
 				topics.LEAVE: {
-					Address: "localhost:60002",
+					Address: "[::1]:60002",
 				},
 			},
 		},
@@ -99,7 +101,7 @@ func main() {
 			DashboardClientConfig: &Config.DashboardClient{
 				ConnectionConfig: &Config.TcpConnection{},
 				ClientConfig: &Config.TcpClient{
-					Address: "localhost:60000",
+					Address: "[::1]:60000",
 				},
 			},
 		},
