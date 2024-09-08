@@ -30,6 +30,7 @@ func New() *AppWebsocketHTTP {
 				Port: 8443,
 			},
 		},
+		nil, nil,
 		WebsocketServer.MessageHandlers{
 			topics.ADD_MESSAGE: app.addMessage,
 		},
@@ -41,6 +42,7 @@ func New() *AppWebsocketHTTP {
 				Port: 8080,
 			},
 		},
+		nil, nil,
 		HTTPServer.Handlers{
 			"/": HTTPServer.SendDirectory("../frontend"),
 		},

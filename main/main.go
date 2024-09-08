@@ -46,6 +46,7 @@ func main() {
 			MetricsUpdateIntervalMs:   1000,
 			MaxChartEntries:           100,
 		},
+		nil, nil,
 	).Start(); err != nil {
 		panic(Error.New("Dashboard server failed to start", err))
 	}
@@ -82,6 +83,7 @@ func main() {
 				},
 			},
 		},
+		nil, nil,
 	).Start(); err != nil {
 		panic(Error.New("MessageBroker resolver failed to start", err))
 	}
@@ -105,6 +107,7 @@ func main() {
 				},
 			},
 		},
+		nil, nil,
 	).Start(); err != nil {
 		panic(Error.New("MessageBroker server failed to start", err))
 	}
