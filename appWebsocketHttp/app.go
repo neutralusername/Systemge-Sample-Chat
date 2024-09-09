@@ -56,6 +56,8 @@ func New() *AppWebsocketHTTP {
 		nil, nil,
 	)
 
+	commands := app.websocketServer.GetDefaultCommands()
+	commands.Merge(app.httpServer.GetDefaultCommands())
 	app.messageBrokerClient = BrokerClient.New("appWebsocketHttp",
 		&Config.MessageBrokerClient{
 			ConnectionConfig: &Config.TcpSystemgeConnection{
@@ -79,7 +81,7 @@ func New() *AppWebsocketHTTP {
 			},
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE},
 		},
-		messageHandler, nil,
+		messageHandler, commands,
 	)
 
 	if err := app.messageBrokerClient.Start(); err != nil {
