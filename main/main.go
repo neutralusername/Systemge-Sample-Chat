@@ -38,9 +38,15 @@ func main() {
 						Port: 60000,
 					},
 				},
-				ConnectionConfig: &Config.TcpSystemgeConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{
+					HeartbeatIntervalMs: 1000,
+				},
 			},
 			Metrics:                   true,
+			Commands:                  true,
+			SystemgeCommands:          true,
+			HttpCommands:              true,
+			WebsocketCommands:         true,
 			HeapUpdateIntervalMs:      1000,
 			GoroutineUpdateIntervalMs: 1000,
 			StatusUpdateIntervalMs:    1000,
@@ -59,10 +65,14 @@ func main() {
 						Port: 60001,
 					},
 				},
-				ConnectionConfig: &Config.TcpSystemgeConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{
+					HeartbeatIntervalMs: 1000,
+				},
 			},
 			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpSystemgeConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{
+					HeartbeatIntervalMs: 1000,
+				},
 				ClientConfig: &Config.TcpClient{
 					Address: "[::1]:60000",
 				},
@@ -88,7 +98,6 @@ func main() {
 	).Start(); err != nil {
 		panic(Error.New("MessageBroker resolver failed to start", err))
 	}
-
 	if err := BrokerServer.New("brokerServer",
 		&Config.MessageBrokerServer{
 			SystemgeServerConfig: &Config.SystemgeServer{
@@ -97,12 +106,16 @@ func main() {
 						Port: 60002,
 					},
 				},
-				ConnectionConfig: &Config.TcpSystemgeConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{
+					HeartbeatIntervalMs: 1000,
+				},
 			},
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE, topics.ADD_MESSAGE},
 			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
 			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpSystemgeConnection{},
+				ConnectionConfig: &Config.TcpSystemgeConnection{
+					HeartbeatIntervalMs: 1000,
+				},
 				ClientConfig: &Config.TcpClient{
 					Address: "[::1]:60000",
 				},
@@ -113,7 +126,6 @@ func main() {
 		panic(Error.New("MessageBroker server failed to start", err))
 	}
 	appWebsocketHttp.New()
-
 	appChat.New()
 	<-make(chan time.Time)
 }
