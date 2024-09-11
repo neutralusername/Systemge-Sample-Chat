@@ -63,7 +63,7 @@ func New() *App {
 		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
-	}, app.messageBrokerClient, nil).Start(); err != nil {
+	}, app.messageBrokerClient, app.messageBrokerClient.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 

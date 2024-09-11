@@ -44,7 +44,7 @@ func New() *AppWebsocketHTTP {
 		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
-	}, app.websocketServer, nil).Start(); err != nil {
+	}, app.websocketServer, app.websocketServer.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
@@ -66,7 +66,7 @@ func New() *AppWebsocketHTTP {
 		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
-	}, app.httpServer, nil).Start(); err != nil {
+	}, app.httpServer, app.httpServer.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
@@ -105,7 +105,7 @@ func New() *AppWebsocketHTTP {
 		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
-	}, app.messageBrokerClient, nil).Start(); err != nil {
+	}, app.messageBrokerClient, app.messageBrokerClient.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
