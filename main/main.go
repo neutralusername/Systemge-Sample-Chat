@@ -126,7 +126,7 @@ func main() {
 		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
-	}, brokerServer, nil).Start(); err != nil {
+	}, brokerServer, brokerResolver.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
