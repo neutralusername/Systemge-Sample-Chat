@@ -38,10 +38,10 @@ func New() *AppWebsocketHTTP {
 		app.OnConnectHandler, app.OnDisconnectHandler,
 	)
 	if err := DashboardClientCustomService.New("appWebsocketHttp_websocketServer", &Config.DashboardClient{
-		ConnectionConfig: &Config.TcpSystemgeConnection{
+		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 			HeartbeatIntervalMs: 1000,
 		},
-		ClientConfig: &Config.TcpClient{
+		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
 	}, app.websocketServer, nil).Start(); err != nil {
@@ -60,10 +60,10 @@ func New() *AppWebsocketHTTP {
 		},
 	)
 	if err := DashboardClientCustomService.New("appWebsocketHttp_httpServer", &Config.DashboardClient{
-		ConnectionConfig: &Config.TcpSystemgeConnection{
+		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 			HeartbeatIntervalMs: 1000,
 		},
-		ClientConfig: &Config.TcpClient{
+		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
 	}, app.httpServer, nil).Start(); err != nil {
@@ -83,13 +83,13 @@ func New() *AppWebsocketHTTP {
 
 	app.messageBrokerClient = BrokerClient.New("appWebsocketHttp",
 		&Config.MessageBrokerClient{
-			ConnectionConfig: &Config.TcpSystemgeConnection{
+			ServerTcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 				HeartbeatIntervalMs: 1000,
 			},
-			ResolverConnectionConfig: &Config.TcpSystemgeConnection{
+			ResolverTcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 				HeartbeatIntervalMs: 1000,
 			},
-			ResolverClientConfigs: []*Config.TcpClient{
+			ResolverTcpClientConfigs: []*Config.TcpClient{
 				{
 					Address: "localhost:60001",
 				},
@@ -99,10 +99,10 @@ func New() *AppWebsocketHTTP {
 		messageHandler, commands,
 	)
 	if err := DashboardClientCustomService.New("appWebsocketHttp_brokerClient", &Config.DashboardClient{
-		ConnectionConfig: &Config.TcpSystemgeConnection{
+		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 			HeartbeatIntervalMs: 1000,
 		},
-		ClientConfig: &Config.TcpClient{
+		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
 	}, app.messageBrokerClient, nil).Start(); err != nil {

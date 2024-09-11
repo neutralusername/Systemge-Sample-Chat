@@ -34,25 +34,25 @@ func main() {
 				},
 			},
 			SystemgeServerConfig: &Config.SystemgeServer{
-				ListenerConfig: &Config.TcpSystemgeListener{
+				TcpSystemgeListenerConfig: &Config.TcpSystemgeListener{
 					TcpServerConfig: &Config.TcpServer{
 						Port: 60000,
 					},
 				},
-				ConnectionConfig: &Config.TcpSystemgeConnection{
+				TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 					HeartbeatIntervalMs: 1000,
 				},
 			},
-			Metrics:                   true,
-			Commands:                  true,
-			SystemgeCommands:          true,
-			HttpCommands:              true,
-			WebsocketCommands:         true,
-			HeapUpdateIntervalMs:      1000,
-			GoroutineUpdateIntervalMs: 1000,
-			StatusUpdateIntervalMs:    1000,
-			MetricsUpdateIntervalMs:   1000,
-			MaxChartEntries:           100,
+			DashboardMetrics:           true,
+			DashboardCommands:          true,
+			DashboardSystemgeCommands:  true,
+			DashboardHttpCommands:      true,
+			DashboardWebsocketCommands: true,
+			HeapUpdateIntervalMs:       1000,
+			GoroutineUpdateIntervalMs:  1000,
+			StatusUpdateIntervalMs:     1000,
+			MetricsUpdateIntervalMs:    1000,
+			MaxChartEntries:            100,
 		},
 		nil, nil,
 	).Start(); err != nil {
@@ -62,12 +62,12 @@ func main() {
 	brokerResolver := BrokerResolver.New("brokerResolver",
 		&Config.MessageBrokerResolver{
 			SystemgeServerConfig: &Config.SystemgeServer{
-				ListenerConfig: &Config.TcpSystemgeListener{
+				TcpSystemgeListenerConfig: &Config.TcpSystemgeListener{
 					TcpServerConfig: &Config.TcpServer{
 						Port: 60001,
 					},
 				},
-				ConnectionConfig: &Config.TcpSystemgeConnection{
+				TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 					HeartbeatIntervalMs: 1000,
 				},
 			},
@@ -91,10 +91,10 @@ func main() {
 		nil, nil,
 	)
 	if err := DashboardClientCustomService.New("brokerResolver", &Config.DashboardClient{
-		ConnectionConfig: &Config.TcpSystemgeConnection{
+		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 			HeartbeatIntervalMs: 1000,
 		},
-		ClientConfig: &Config.TcpClient{
+		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
 	}, brokerResolver, nil).Start(); err != nil {
@@ -104,12 +104,12 @@ func main() {
 	brokerServer := BrokerServer.New("brokerServer",
 		&Config.MessageBrokerServer{
 			SystemgeServerConfig: &Config.SystemgeServer{
-				ListenerConfig: &Config.TcpSystemgeListener{
+				TcpSystemgeListenerConfig: &Config.TcpSystemgeListener{
 					TcpServerConfig: &Config.TcpServer{
 						Port: 60002,
 					},
 				},
-				ConnectionConfig: &Config.TcpSystemgeConnection{
+				TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 					HeartbeatIntervalMs: 1000,
 				},
 			},
@@ -120,10 +120,10 @@ func main() {
 	)
 
 	if err := DashboardClientCustomService.New("brokerServer", &Config.DashboardClient{
-		ConnectionConfig: &Config.TcpSystemgeConnection{
+		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 			HeartbeatIntervalMs: 1000,
 		},
-		ClientConfig: &Config.TcpClient{
+		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
 	}, brokerServer, nil).Start(); err != nil {
