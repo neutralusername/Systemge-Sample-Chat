@@ -7,6 +7,7 @@ import (
 	"github.com/neutralusername/Systemge/BrokerClient"
 	"github.com/neutralusername/Systemge/Commands"
 	"github.com/neutralusername/Systemge/Config"
+	"github.com/neutralusername/Systemge/DashboardClientCustomService"
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
 )
@@ -32,14 +33,6 @@ func New() *App {
 			ResolverConnectionConfig: &Config.TcpSystemgeConnection{
 				HeartbeatIntervalMs: 1000,
 			},
-			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpSystemgeConnection{
-					HeartbeatIntervalMs: 1000,
-				},
-				ClientConfig: &Config.TcpClient{
-					Address: "localhost:60000",
-				},
-			},
 			ResolverClientConfigs: []*Config.TcpClient{
 				{
 					Address: "localhost:60001",
@@ -63,9 +56,15 @@ func New() *App {
 			"getRooms":    app.getRooms,
 		},
 	)
-
-	if err := app.messageBrokerClient.Start(); err != nil {
-		panic(Error.New("MessageBroker client failed to start", err))
+	if err := DashboardClientCustomService.New("appChat_brokerClient", &Config.DashboardClient{
+		ConnectionConfig: &Config.TcpSystemgeConnection{
+			HeartbeatIntervalMs: 1000,
+		},
+		ClientConfig: &Config.TcpClient{
+			Address: "[::1]:60000",
+		},
+	}, app.messageBrokerClient, nil).Start(); err != nil {
+		panic(Error.New("Dashboard client failed to start", err))
 	}
 
 	app.rooms = map[string]*room{}

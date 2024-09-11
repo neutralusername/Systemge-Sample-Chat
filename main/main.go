@@ -9,7 +9,8 @@ import (
 	"github.com/neutralusername/Systemge/BrokerResolver"
 	"github.com/neutralusername/Systemge/BrokerServer"
 	"github.com/neutralusername/Systemge/Config"
-	"github.com/neutralusername/Systemge/Dashboard"
+	"github.com/neutralusername/Systemge/DashboardClientCustomService"
+	"github.com/neutralusername/Systemge/DashboardServer"
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/Helpers"
 )
@@ -18,7 +19,7 @@ const LOGGER_PATH = "logs.log"
 
 func main() {
 	Helpers.StartPprof()
-	if err := Dashboard.NewServer("DasbhboardServer",
+	if err := DashboardServer.New("DasbhboardServer",
 		&Config.DashboardServer{
 			HTTPServerConfig: &Config.HTTPServer{
 				TcpServerConfig: &Config.TcpServer{
@@ -57,7 +58,8 @@ func main() {
 	).Start(); err != nil {
 		panic(Error.New("Dashboard server failed to start", err))
 	}
-	if err := BrokerResolver.New("brokerResolver",
+
+	brokerResolver := BrokerResolver.New("brokerResolver",
 		&Config.MessageBrokerResolver{
 			SystemgeServerConfig: &Config.SystemgeServer{
 				ListenerConfig: &Config.TcpSystemgeListener{
@@ -67,14 +69,6 @@ func main() {
 				},
 				ConnectionConfig: &Config.TcpSystemgeConnection{
 					HeartbeatIntervalMs: 1000,
-				},
-			},
-			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpSystemgeConnection{
-					HeartbeatIntervalMs: 1000,
-				},
-				ClientConfig: &Config.TcpClient{
-					Address: "[::1]:60000",
 				},
 			},
 			AsyncTopicClientConfigs: map[string]*Config.TcpClient{
@@ -95,10 +89,19 @@ func main() {
 			},
 		},
 		nil, nil,
-	).Start(); err != nil {
-		panic(Error.New("MessageBroker resolver failed to start", err))
+	)
+	if err := DashboardClientCustomService.New("brokerResolver", &Config.DashboardClient{
+		ConnectionConfig: &Config.TcpSystemgeConnection{
+			HeartbeatIntervalMs: 1000,
+		},
+		ClientConfig: &Config.TcpClient{
+			Address: "[::1]:60000",
+		},
+	}, brokerResolver, nil).Start(); err != nil {
+		panic(Error.New("Dashboard client failed to start", err))
 	}
-	if err := BrokerServer.New("brokerServer",
+
+	brokerServer := BrokerServer.New("brokerServer",
 		&Config.MessageBrokerServer{
 			SystemgeServerConfig: &Config.SystemgeServer{
 				ListenerConfig: &Config.TcpSystemgeListener{
@@ -112,19 +115,21 @@ func main() {
 			},
 			AsyncTopics: []string{topics.PROPAGATE_MESSAGE, topics.ADD_MESSAGE},
 			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
-			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpSystemgeConnection{
-					HeartbeatIntervalMs: 1000,
-				},
-				ClientConfig: &Config.TcpClient{
-					Address: "[::1]:60000",
-				},
-			},
 		},
 		nil, nil,
-	).Start(); err != nil {
-		panic(Error.New("MessageBroker server failed to start", err))
+	)
+
+	if err := DashboardClientCustomService.New("brokerServer", &Config.DashboardClient{
+		ConnectionConfig: &Config.TcpSystemgeConnection{
+			HeartbeatIntervalMs: 1000,
+		},
+		ClientConfig: &Config.TcpClient{
+			Address: "[::1]:60000",
+		},
+	}, brokerServer, nil).Start(); err != nil {
+		panic(Error.New("Dashboard client failed to start", err))
 	}
+
 	appWebsocketHttp.New()
 	appChat.New()
 	<-make(chan time.Time)

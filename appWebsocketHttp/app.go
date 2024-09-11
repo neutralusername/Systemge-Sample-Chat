@@ -6,6 +6,7 @@ import (
 
 	"github.com/neutralusername/Systemge/BrokerClient"
 	"github.com/neutralusername/Systemge/Config"
+	"github.com/neutralusername/Systemge/DashboardClientCustomService"
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/HTTPServer"
 	"github.com/neutralusername/Systemge/Message"
@@ -36,6 +37,17 @@ func New() *AppWebsocketHTTP {
 		},
 		app.OnConnectHandler, app.OnDisconnectHandler,
 	)
+	if err := DashboardClientCustomService.New("appWebsocketHttp_websocketServer", &Config.DashboardClient{
+		ConnectionConfig: &Config.TcpSystemgeConnection{
+			HeartbeatIntervalMs: 1000,
+		},
+		ClientConfig: &Config.TcpClient{
+			Address: "[::1]:60000",
+		},
+	}, app.websocketServer, nil).Start(); err != nil {
+		panic(Error.New("Dashboard client failed to start", err))
+	}
+
 	app.httpServer = HTTPServer.New("appWebsocketHttp",
 		&Config.HTTPServer{
 			TcpServerConfig: &Config.TcpServer{
@@ -47,6 +59,16 @@ func New() *AppWebsocketHTTP {
 			"/": HTTPServer.SendDirectory("../frontend"),
 		},
 	)
+	if err := DashboardClientCustomService.New("appWebsocketHttp_httpServer", &Config.DashboardClient{
+		ConnectionConfig: &Config.TcpSystemgeConnection{
+			HeartbeatIntervalMs: 1000,
+		},
+		ClientConfig: &Config.TcpClient{
+			Address: "[::1]:60000",
+		},
+	}, app.httpServer, nil).Start(); err != nil {
+		panic(Error.New("Dashboard client failed to start", err))
+	}
 
 	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
 		SystemgeConnection.AsyncMessageHandlers{
@@ -58,6 +80,7 @@ func New() *AppWebsocketHTTP {
 
 	commands := app.websocketServer.GetDefaultCommands()
 	commands.Merge(app.httpServer.GetDefaultCommands())
+
 	app.messageBrokerClient = BrokerClient.New("appWebsocketHttp",
 		&Config.MessageBrokerClient{
 			ConnectionConfig: &Config.TcpSystemgeConnection{
@@ -65,14 +88,6 @@ func New() *AppWebsocketHTTP {
 			},
 			ResolverConnectionConfig: &Config.TcpSystemgeConnection{
 				HeartbeatIntervalMs: 1000,
-			},
-			DashboardClientConfig: &Config.DashboardClient{
-				ConnectionConfig: &Config.TcpSystemgeConnection{
-					HeartbeatIntervalMs: 1000,
-				},
-				ClientConfig: &Config.TcpClient{
-					Address: "localhost:60000",
-				},
 			},
 			ResolverClientConfigs: []*Config.TcpClient{
 				{
@@ -83,15 +98,15 @@ func New() *AppWebsocketHTTP {
 		},
 		messageHandler, commands,
 	)
-
-	if err := app.messageBrokerClient.Start(); err != nil {
-		panic(err)
-	}
-	if err := app.websocketServer.Start(); err != nil {
-		panic(err)
-	}
-	if err := app.httpServer.Start(); err != nil {
-		panic(err)
+	if err := DashboardClientCustomService.New("appWebsocketHttp_brokerClient", &Config.DashboardClient{
+		ConnectionConfig: &Config.TcpSystemgeConnection{
+			HeartbeatIntervalMs: 1000,
+		},
+		ClientConfig: &Config.TcpClient{
+			Address: "[::1]:60000",
+		},
+	}, app.messageBrokerClient, nil).Start(); err != nil {
+		panic(Error.New("Dashboard client failed to start", err))
 	}
 
 	return app
