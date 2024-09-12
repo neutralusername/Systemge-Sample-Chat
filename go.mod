@@ -6,7 +6,7 @@ replace github.com/neutralusername/Systemge => ../Systemge
 
 //require github.com/neutralusername/Systemge v0.0.0-20240912114254-9d79bc5d9c59
 
-require github.com/neutralusername/Systemge v0.0.0-20240912124442-84a748a74c05
+require github.com/neutralusername/Systemge v0.0.0-20240912125138-0cac65f8db21
 
 require (
 	github.com/gorilla/websocket v1.5.3 // indirect
