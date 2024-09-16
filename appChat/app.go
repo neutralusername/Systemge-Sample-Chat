@@ -9,7 +9,7 @@ import (
 	"github.com/neutralusername/Systemge/Config"
 	"github.com/neutralusername/Systemge/DashboardClientCustomService"
 	"github.com/neutralusername/Systemge/Error"
-	"github.com/neutralusername/Systemge/SystemgeConnection"
+	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
 )
 
 type App struct {
@@ -27,6 +27,7 @@ func New() *App {
 
 	app.messageBrokerClient = BrokerClient.New("appChat",
 		&Config.MessageBrokerClient{
+			ResolutionAttemptRetryIntervalMs: 1000,
 			ServerTcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 				HeartbeatIntervalMs: 1000,
 			},
@@ -41,11 +42,11 @@ func New() *App {
 			AsyncTopics: []string{topics.ADD_MESSAGE},
 			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
 		},
-		SystemgeConnection.NewConcurrentMessageHandler(
-			SystemgeConnection.AsyncMessageHandlers{
+		SystemgeMessageHandler.NewConcurrentMessageHandler(
+			SystemgeMessageHandler.AsyncMessageHandlers{
 				topics.ADD_MESSAGE: app.addMessage,
 			},
-			SystemgeConnection.SyncMessageHandlers{
+			SystemgeMessageHandler.SyncMessageHandlers{
 				topics.JOIN:  app.join,
 				topics.LEAVE: app.leave,
 			},

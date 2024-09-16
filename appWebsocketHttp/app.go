@@ -11,6 +11,7 @@ import (
 	"github.com/neutralusername/Systemge/HTTPServer"
 	"github.com/neutralusername/Systemge/Message"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
+	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
 	"github.com/neutralusername/Systemge/WebsocketServer"
 )
 
@@ -70,11 +71,11 @@ func New() *AppWebsocketHTTP {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
-	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
-		SystemgeConnection.AsyncMessageHandlers{
+	messageHandler := SystemgeMessageHandler.NewConcurrentMessageHandler(
+		SystemgeMessageHandler.AsyncMessageHandlers{
 			topics.PROPAGATE_MESSAGE: app.propagateMessage,
 		},
-		SystemgeConnection.SyncMessageHandlers{},
+		SystemgeMessageHandler.SyncMessageHandlers{},
 		nil, nil,
 	)
 
@@ -83,6 +84,7 @@ func New() *AppWebsocketHTTP {
 
 	app.messageBrokerClient = BrokerClient.New("appWebsocketHttp",
 		&Config.MessageBrokerClient{
+			ResolutionAttemptRetryIntervalMs: 1000,
 			ServerTcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
 				HeartbeatIntervalMs: 1000,
 			},

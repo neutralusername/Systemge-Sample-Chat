@@ -43,16 +43,12 @@ func main() {
 					HeartbeatIntervalMs: 1000,
 				},
 			},
-			DashboardMetrics:           true,
-			DashboardCommands:          true,
-			DashboardSystemgeCommands:  true,
-			DashboardHttpCommands:      true,
-			DashboardWebsocketCommands: true,
-			HeapUpdateIntervalMs:       1000,
-			GoroutineUpdateIntervalMs:  1000,
-			StatusUpdateIntervalMs:     1000,
-			MetricsUpdateIntervalMs:    1000,
-			MaxChartEntries:            100,
+			DashboardSystemgeCommands:   true,
+			DashboardHttpCommands:       true,
+			DashboardWebsocketCommands:  true,
+			FrontendHeartbeatIntervalMs: 1000 * 60,
+			UpdateIntervalMs:            1000,
+			MaxMetricEntries:            100,
 		},
 		nil, nil,
 	).Start(); err != nil {
@@ -97,7 +93,7 @@ func main() {
 		TcpClientConfig: &Config.TcpClient{
 			Address: "[::1]:60000",
 		},
-	}, brokerResolver, nil).Start(); err != nil {
+	}, brokerResolver, brokerResolver.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
@@ -119,14 +115,16 @@ func main() {
 		nil, nil,
 	)
 
-	if err := DashboardClientCustomService.New("brokerServer", &Config.DashboardClient{
-		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
-			HeartbeatIntervalMs: 1000,
-		},
-		TcpClientConfig: &Config.TcpClient{
-			Address: "[::1]:60000",
-		},
-	}, brokerServer, brokerResolver.GetDefaultCommands()).Start(); err != nil {
+	if err := DashboardClientCustomService.New("brokerServer",
+		&Config.DashboardClient{
+			TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
+				HeartbeatIntervalMs: 1000,
+			},
+			TcpClientConfig: &Config.TcpClient{
+				Address: "[::1]:60000",
+			},
+		}, brokerServer, brokerResolver.GetDefaultCommands(),
+	).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
