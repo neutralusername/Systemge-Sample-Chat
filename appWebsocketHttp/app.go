@@ -11,7 +11,6 @@ import (
 	"github.com/neutralusername/Systemge/HTTPServer"
 	"github.com/neutralusername/Systemge/Message"
 	"github.com/neutralusername/Systemge/SystemgeConnection"
-	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
 	"github.com/neutralusername/Systemge/WebsocketServer"
 )
 
@@ -75,11 +74,11 @@ func New() *AppWebsocketHTTP {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
-	messageHandler := SystemgeMessageHandler.NewConcurrentMessageHandler(
-		SystemgeMessageHandler.AsyncMessageHandlers{
+	messageHandler := SystemgeConnection.NewConcurrentMessageHandler(
+		SystemgeConnection.AsyncMessageHandlers{
 			topics.PROPAGATE_MESSAGE: app.propagateMessage,
 		},
-		SystemgeMessageHandler.SyncMessageHandlers{},
+		SystemgeConnection.SyncMessageHandlers{},
 		nil, nil,
 	)
 

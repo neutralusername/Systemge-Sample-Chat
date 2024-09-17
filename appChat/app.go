@@ -9,7 +9,7 @@ import (
 	"github.com/neutralusername/Systemge/Config"
 	"github.com/neutralusername/Systemge/DashboardClientCustomService"
 	"github.com/neutralusername/Systemge/Error"
-	"github.com/neutralusername/Systemge/SystemgeMessageHandler"
+	"github.com/neutralusername/Systemge/SystemgeConnection"
 )
 
 type App struct {
@@ -42,11 +42,11 @@ func New() *App {
 			AsyncTopics: []string{topics.ADD_MESSAGE},
 			SyncTopics:  []string{topics.JOIN, topics.LEAVE},
 		},
-		SystemgeMessageHandler.NewConcurrentMessageHandler(
-			SystemgeMessageHandler.AsyncMessageHandlers{
+		SystemgeConnection.NewConcurrentMessageHandler(
+			SystemgeConnection.AsyncMessageHandlers{
 				topics.ADD_MESSAGE: app.addMessage,
 			},
-			SystemgeMessageHandler.SyncMessageHandlers{
+			SystemgeConnection.SyncMessageHandlers{
 				topics.JOIN:  app.join,
 				topics.LEAVE: app.leave,
 			},
