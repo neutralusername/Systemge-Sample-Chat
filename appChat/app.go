@@ -57,14 +57,16 @@ func New() *App {
 			"getRooms":    app.getRooms,
 		},
 	)
-	if err := DashboardClientCustomService.New("appChat_brokerClient", &Config.DashboardClient{
-		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
-			HeartbeatIntervalMs: 1000,
+	if err := DashboardClientCustomService.New("appChat_brokerClient",
+		&Config.DashboardClient{
+			TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
+				HeartbeatIntervalMs: 1000,
+			},
+			TcpClientConfig: &Config.TcpClient{
+				Address: "[::1]:60000",
+			},
 		},
-		TcpClientConfig: &Config.TcpClient{
-			Address: "[::1]:60000",
-		},
-	}, app.messageBrokerClient, app.messageBrokerClient.GetDefaultCommands()).Start(); err != nil {
+		app.messageBrokerClient, app.messageBrokerClient.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 

@@ -38,14 +38,16 @@ func New() *AppWebsocketHTTP {
 		},
 		app.OnConnectHandler, app.OnDisconnectHandler,
 	)
-	if err := DashboardClientCustomService.New("appWebsocketHttp_websocketServer", &Config.DashboardClient{
-		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
-			HeartbeatIntervalMs: 1000,
+	if err := DashboardClientCustomService.New("appWebsocketHttp_websocketServer",
+		&Config.DashboardClient{
+			TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
+				HeartbeatIntervalMs: 1000,
+			},
+			TcpClientConfig: &Config.TcpClient{
+				Address: "[::1]:60000",
+			},
 		},
-		TcpClientConfig: &Config.TcpClient{
-			Address: "[::1]:60000",
-		},
-	}, app.websocketServer, app.websocketServer.GetDefaultCommands()).Start(); err != nil {
+		app.websocketServer, app.websocketServer.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
@@ -60,14 +62,16 @@ func New() *AppWebsocketHTTP {
 			"/": HTTPServer.SendDirectory("../frontend"),
 		},
 	)
-	if err := DashboardClientCustomService.New("appWebsocketHttp_httpServer", &Config.DashboardClient{
-		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
-			HeartbeatIntervalMs: 1000,
+	if err := DashboardClientCustomService.New("appWebsocketHttp_httpServer",
+		&Config.DashboardClient{
+			TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{
+				HeartbeatIntervalMs: 1000,
+			},
+			TcpClientConfig: &Config.TcpClient{
+				Address: "[::1]:60000",
+			},
 		},
-		TcpClientConfig: &Config.TcpClient{
-			Address: "[::1]:60000",
-		},
-	}, app.httpServer, app.httpServer.GetDefaultCommands()).Start(); err != nil {
+		app.httpServer, app.httpServer.GetDefaultCommands()).Start(); err != nil {
 		panic(Error.New("Dashboard client failed to start", err))
 	}
 
