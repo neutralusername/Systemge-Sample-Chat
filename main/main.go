@@ -47,8 +47,9 @@ func main() {
 			DashboardHttpCommands:       true,
 			DashboardWebsocketCommands:  true,
 			FrontendHeartbeatIntervalMs: 1000 * 60,
-			UpdateIntervalMs:            1000,
-			MaxEntriesPerMetrics:        100,
+			//FrontendPassword:            "test",
+			UpdateIntervalMs:     1000,
+			MaxEntriesPerMetrics: 100,
 		},
 		nil, nil,
 	).Start(); err != nil {
